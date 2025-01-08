@@ -1,16 +1,18 @@
 # on_app
 
-A new Flutter project.
+An app to register ons and offs after taking 
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+You will need a .env file. This file must contain 
 
-A few resources to get you started if this is your first Flutter project:
+These variables are found in the Supabase project. Ask the maintainer for these:
+- SUPABASE_URL
+- SUPABASE_KEY
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+These are OAuth 2.0 Client IDs from Google cloud:
+- GOOGLE_CLIENT_ID
+- WEB_CLIENT_ID
+- IOS_CLIENT_ID
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Run the build_ios.sh first if you want to deploy to iphones.
