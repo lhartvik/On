@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_app/db/database_helper.dart';
+import 'package:on_app/db/supabase_helper.dart';
 import 'package:on_app/model/logg.dart';
 
 class ViewScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class ViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: DatabaseHelper.instance.readAllLogs(),
+          future: SupabaseHelper.instance.readAllLogs(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -21,7 +21,6 @@ class ViewScreen extends StatelessWidget {
               );
             } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               List<Logg> logs = snapshot.data!;
-              print(logs.length);
               return ListView.builder(
                   itemCount: logs.length,
                   itemBuilder: (context, index) {

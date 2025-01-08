@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_app/db/database_helper.dart';
+import 'package:on_app/db/supabase_helper.dart';
 
 class Loggeknapp extends StatelessWidget {
   const Loggeknapp({
@@ -22,7 +22,7 @@ class Loggeknapp extends StatelessWidget {
       child: ElevatedButton(
           style: buttonStyle,
           onPressed: () {
-            DatabaseHelper.instance.insert(tittel);
+            SupabaseHelper.instance.insert(tittel);
           },
           child: Padding(
             padding: const EdgeInsets.all(30.0),
