@@ -15,9 +15,10 @@ class SupabaseHelper implements DatabaseHelper {
   Future<SupabaseClient> get db async {
     if (_db == null) {
       await Supabase.initialize(
-        url: dotenv.env['SUPABASE_URL'] ?? '',
-        anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
-      );
+          url: dotenv.env['SUPABASE_URL'] ?? '',
+          anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
+          realtimeClientOptions:
+              const RealtimeClientOptions(eventsPerSecond: 2));
       _db = Supabase.instance.client;
       await nativeGoogleSignIn();
     }
@@ -51,6 +52,36 @@ class SupabaseHelper implements DatabaseHelper {
   void clearAll() async {
     await db
         .then((database) => database.from(_tableName).delete().neq('event', 0));
+  }
+
+  Future<DateTime?> lastMedicineTaken() async {
+    var database = await db;
+    PostgrestList foo = await database
+        .from(_tableName)
+        .select('timestamp')
+        .eq('event', 'Ta medisin')
+        .order('timestamp', ascending: false)
+        .limit(1);
+
+    var bar = DateTime.tryParse(foo.firstOrNull?['timestamp']);
+
+    return bar;
+  }
+
+  Future<bool> lastStatus() async {
+    var database = await db;
+    PostgrestList sisteStatus = await database
+        .from(_tableName)
+        .select('event')
+        .or('event.eq.On,event.eq.Off')
+        .order('timestamp', ascending: false)
+        .limit(1);
+    var siste = sisteStatus.firstOrNull?['event'];
+    if (siste == 'On') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static Future<AuthResponse> nativeGoogleSignIn() async {

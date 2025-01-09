@@ -6,10 +6,14 @@ class Loggeknapp extends StatelessWidget {
     super.key,
     required this.tittel,
     required this.theme,
+    required this.disabled,
+    required this.action,
   });
 
   final String tittel;
   final ThemeData theme;
+  final bool disabled;
+  final void Function() action;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +25,12 @@ class Loggeknapp extends StatelessWidget {
     return Center(
       child: ElevatedButton(
           style: buttonStyle,
-          onPressed: () {
-            SupabaseHelper.instance.insert(tittel);
-          },
+          onPressed: disabled
+              ? null
+              : () {
+                  SupabaseHelper.instance.insert(tittel);
+                  action();
+                },
           child: Padding(
             padding: const EdgeInsets.all(30.0),
             child: Text(tittel, style: style),
