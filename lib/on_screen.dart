@@ -35,9 +35,9 @@ class _OnScreenState extends State<OnScreen> {
 
   updateStatus() async {
     SupabaseHelper.instance.lastStatus().then(
-          (value) => (value) => setState(() {
-                _isOn = value;
-              }),
+          (value) => setState(() {
+            _isOn = value;
+          }),
         );
   }
 
