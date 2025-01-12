@@ -14,11 +14,6 @@ class SupabaseHelper implements DatabaseHelper {
 
   Future<SupabaseClient> get db async {
     if (_db == null) {
-      await Supabase.initialize(
-          url: dotenv.env['SUPABASE_URL'] ?? '',
-          anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
-          realtimeClientOptions:
-              const RealtimeClientOptions(eventsPerSecond: 2));
       _db = Supabase.instance.client;
       await nativeGoogleSignIn();
     }

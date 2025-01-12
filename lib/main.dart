@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:on_app/on_screen.dart';
 import 'package:on_app/view_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
   try {
-    await dotenv.load(fileName: ".env"); // Load environment variables
+    await dotenv.load(fileName: ".env");
   } catch (e) {
-    throw Exception(
-        'Missing .env file in root directory'); // Print error if any
+    throw Exception('Missing .env file in root directory');
   }
+  await Supabase.initialize(
+      url: dotenv.env['SUPABASE_URL'] ?? '',
+      anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
+      realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
   runApp(const OnApp());
 }
 
 class OnApp extends StatelessWidget {
   const OnApp({super.key});
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

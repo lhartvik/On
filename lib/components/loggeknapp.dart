@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_app/db/supabase_helper.dart';
 
-class Loggeknapp extends StatelessWidget {
+class Loggeknapp extends StatefulWidget {
   const Loggeknapp({
     super.key,
     required this.tittel,
@@ -16,24 +16,39 @@ class Loggeknapp extends StatelessWidget {
   final void Function() action;
 
   @override
+  State<Loggeknapp> createState() => _LoggeknappState();
+}
+
+class _LoggeknappState extends State<Loggeknapp> {
+  bool _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
-    TextStyle style = theme.textTheme.displaySmall!
-        .copyWith(color: theme.colorScheme.onPrimary);
+    TextStyle style = widget.theme.textTheme.displaySmall!
+        .copyWith(color: widget.theme.colorScheme.onPrimary);
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: widget.theme.colorScheme.primary,
         minimumSize: Size.fromHeight(40));
     return Center(
       child: ElevatedButton(
           style: buttonStyle,
-          onPressed: disabled
+          onPressed: widget.disabled || _isLoading
               ? null
               : () {
-                  SupabaseHelper.instance.insert(tittel);
-                  action();
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  SupabaseHelper.instance.insert(widget.tittel);
+                  widget.action();
+                  setState(() {
+                    _isLoading = false;
+                  });
                 },
           child: Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Text(tittel, style: style),
+            child: _isLoading
+                ? CircularProgressIndicator()
+                : Text(widget.tittel, style: style),
           )),
     );
   }
