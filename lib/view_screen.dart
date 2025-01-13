@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/db/supabase_helper.dart';
 import 'package:on_app/model/logg.dart';
 
+import 'db/database_helper.dart';
+
 class ViewScreen extends StatelessWidget {
   const ViewScreen({super.key});
+  final mode = Mode.Local;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: SupabaseHelper.instance.readAllLogs(),
+          future: (mode == Mode.Local)
+              ? LocalDBHelper.instance.readAllLogs()
+              : SupabaseHelper.instance.readAllLogs(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(

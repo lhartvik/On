@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/db/supabase_helper.dart';
 
 class Loggeknapp extends StatefulWidget {
@@ -32,13 +33,13 @@ class _LoggeknappState extends State<Loggeknapp> {
     return Center(
       child: ElevatedButton(
           style: buttonStyle,
-          onPressed: widget.disabled || _isLoading
+          onPressed: widget.disabled
               ? null
               : () {
                   setState(() {
                     _isLoading = true;
                   });
-                  SupabaseHelper.instance.insert(widget.tittel);
+                  LocalDBHelper.instance.insert(widget.tittel);
                   widget.action();
                   setState(() {
                     _isLoading = false;

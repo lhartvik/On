@@ -36,11 +36,8 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<void> insert(String event) async {
     Database db = await instance.database;
-    await db.insert(_tableName, {
-      'event': event,
-      'user_id': 'local user',
-      'timestamp': DateTime.now().toIso8601String()
-    });
+    await db.insert(_tableName,
+        {'event': event, 'timestamp': DateTime.now().toIso8601String()});
   }
 
   @override
@@ -56,5 +53,32 @@ class LocalDBHelper implements DatabaseHelper {
   void clearAll() async {
     Database db = await instance.database;
     db.delete(_tableName);
+  }
+
+  @override
+  Future<DateTime?> lastMedicineTaken() async {
+    Database db = await instance.database;
+    var foo = await db.query(_tableName,
+        columns: ['timestamp'],
+        where: 'event = ?',
+        whereArgs: ['Ta medisin'],
+        orderBy: 'timestamp DESC',
+        limit: 1);
+
+    return foo.isNotEmpty
+        ? DateTime.tryParse(foo.first['timestamp'] as String)
+        : null;
+  }
+
+  @override
+  Future<bool> lastStatus() async {
+    Database db = await instance.database;
+    var sisteStatus = await db.query(_tableName,
+        columns: ['event'],
+        where: 'event = ? OR event = ?',
+        whereArgs: ['On', 'Off'],
+        orderBy: 'timestamp DESC',
+        limit: 1);
+    return sisteStatus.isNotEmpty ? sisteStatus.first['event'] == 'On' : false;
   }
 }
