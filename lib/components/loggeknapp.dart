@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/db/supabase_helper.dart';
 
 class Loggeknapp extends StatefulWidget {
   const Loggeknapp({

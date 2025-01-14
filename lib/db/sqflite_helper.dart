@@ -36,14 +36,16 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<void> insert(String event) async {
     Database db = await instance.database;
-    await db.insert(_tableName,
-        {'event': event, 'timestamp': DateTime.now().toIso8601String()});
+    await db.insert(_tableName, {
+      'event': event,
+      'timestamp': DateTime.now().toUtc().toIso8601String()
+    });
   }
 
   @override
   Future<List<Logg>> readAllLogs() async {
     Database db = await instance.database;
-    var dbentries = await db.query(_tableName);
+    var dbentries = await db.query(_tableName, orderBy: 'timestamp DESC');
     return dbentries.isNotEmpty
         ? dbentries.map((entry) => Logg.fromJsonDatabase(entry)).toList()
         : [];
@@ -66,7 +68,7 @@ class LocalDBHelper implements DatabaseHelper {
         limit: 1);
 
     return foo.isNotEmpty
-        ? DateTime.tryParse(foo.first['timestamp'] as String)
+        ? DateTime.tryParse(foo.first['timestamp'] as String)?.toUtc()
         : null;
   }
 
@@ -80,5 +82,15 @@ class LocalDBHelper implements DatabaseHelper {
         orderBy: 'timestamp DESC',
         limit: 1);
     return sisteStatus.isNotEmpty ? sisteStatus.first['event'] == 'On' : false;
+  }
+
+  void insertAllLogs(List<Logg> value) async {
+    var database = await instance.database;
+    await database.transaction((txn) async {
+      for (var logg in value) {
+        await txn.insert(
+            _tableName, {'event': logg.event, 'timestamp': logg.timestamp});
+      }
+    });
   }
 }

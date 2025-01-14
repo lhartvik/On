@@ -8,4 +8,3 @@ abstract class DatabaseHelper {
   Future<bool> lastStatus();
 }
 
-enum Mode { Local, Supabase }

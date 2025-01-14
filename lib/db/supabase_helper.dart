@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:on_app/db/database_helper.dart';
@@ -14,18 +16,10 @@ class SupabaseHelper implements DatabaseHelper {
 
   Future<SupabaseClient> get db async {
     if (_db == null) {
-      try {
-        await dotenv.load(fileName: ".env");
-      } catch (e) {
-        throw Exception('Missing .env file in root directory');
-      }
-      await Supabase.initialize(
-          url: dotenv.env['SUPABASE_URL'] ?? '',
-          anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
-          realtimeClientOptions:
-              const RealtimeClientOptions(eventsPerSecond: 2));
       _db = Supabase.instance.client;
-      await nativeGoogleSignIn();
+      if (Supabase.instance.client.auth.currentUser == null) {
+        await nativeGoogleSignIn();
+      }
     }
 
     return _db!;
@@ -33,6 +27,17 @@ class SupabaseHelper implements DatabaseHelper {
 
   Future<GoTrueClient> get auth async {
     return await db.then((it) => it.auth);
+  }
+
+  void insertAllLogs(List<Logg> value) async {
+    var database = await db;
+    List<Map<String, dynamic>> data = value.map((logg) {
+      return {
+        'event': logg.event,
+        'timestamp': logg.timestamp,
+      };
+    }).toList();
+    await database.from(_tableName).upsert(data, ignoreDuplicates: true);
   }
 
   @override
@@ -59,20 +64,20 @@ class SupabaseHelper implements DatabaseHelper {
         .then((database) => database.from(_tableName).delete().neq('event', 0));
   }
 
+  @override
   Future<DateTime?> lastMedicineTaken() async {
     var database = await db;
-    PostgrestList foo = await database
+    PostgrestList list = await database
         .from(_tableName)
         .select('timestamp')
         .eq('event', 'Ta medisin')
         .order('timestamp', ascending: false)
         .limit(1);
 
-    var bar = DateTime.tryParse(foo.firstOrNull?['timestamp']);
-
-    return bar;
+    return DateTime.tryParse(list.firstOrNull?['timestamp'])?.toUtc();
   }
 
+  @override
   Future<bool> lastStatus() async {
     var database = await db;
     PostgrestList sisteStatus = await database
@@ -117,5 +122,16 @@ class SupabaseHelper implements DatabaseHelper {
       idToken: idToken,
       accessToken: accessToken,
     );
+  }
+
+  subscription(void Function(PostgresChangePayload payload) callback) {
+    return Supabase.instance.client
+        .channel('events')
+        .onPostgresChanges(
+            event: PostgresChangeEvent.insert,
+            schema: 'public',
+            table: 'events',
+            callback: callback)
+        .subscribe();
   }
 }

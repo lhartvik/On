@@ -4,9 +4,19 @@ import 'package:on_app/on_screen.dart';
 import 'package:on_app/view_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'cloud_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    throw Exception('Missing .env file in root directory');
+  }
+  await Supabase.initialize(
+      url: dotenv.env['SUPABASE_URL'] ?? '',
+      anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
+      realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
   runApp(const OnApp());
 }
 
@@ -44,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const OnScreen(),
     const ViewScreen(),
+    const CloudScreen(),
   ];
 
   @override
@@ -57,6 +68,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.hourglass_top), label: 'Logg'),
           BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Vis'),
+          BottomNavigationBarItem(icon: Icon(Icons.cloud_sync), label: 'Sky'),
         ],
         selectedItemColor: Theme.of(context).colorScheme.onPrimary,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
