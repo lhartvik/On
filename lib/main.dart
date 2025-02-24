@@ -3,8 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:on_app/on_screen.dart';
 import 'package:on_app/view_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'cloud_screen.dart';
+import 'plan_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +19,8 @@ Future<void> main() async {
       url: dotenv.env['SUPABASE_URL'] ?? '',
       anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
       realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2));
+  initializeDateFormatting();
+
   runApp(const OnApp());
 }
 
@@ -25,6 +29,9 @@ class OnApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!),
       title: 'On!',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -54,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const OnScreen(),
     const ViewScreen(),
+    const PlanScreen(),
     const CloudScreen(),
   ];
 
@@ -68,6 +76,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.hourglass_top), label: 'Logg'),
           BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Vis'),
+          BottomNavigationBarItem(icon: Icon(Icons.access_time), label: 'Plan'),
           BottomNavigationBarItem(icon: Icon(Icons.cloud_sync), label: 'Sky'),
         ],
         selectedItemColor: Theme.of(context).colorScheme.onPrimary,

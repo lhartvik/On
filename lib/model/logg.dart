@@ -9,4 +9,11 @@ class Logg {
         event: jsonObject['event'] as String,
         timestamp: jsonObject['timestamp'] as String);
   }
+
+  Map<String, Object?> toJsonDatabase() {
+    return {
+      'event': event,
+      'timestamp': timestamp,
+    };
+  }
 }

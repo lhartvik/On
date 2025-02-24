@@ -115,7 +115,7 @@ class _OnScreenState extends State<OnScreen> {
             Loggeknapp(
                 tittel: 'On',
                 theme: theme,
-                disabled: _isOn,
+                disabled: false,
                 action: () {
                   setState(() {
                     _isOn = true;
@@ -125,7 +125,7 @@ class _OnScreenState extends State<OnScreen> {
             Loggeknapp(
                 tittel: 'Off',
                 theme: theme,
-                disabled: !_isOn,
+                disabled: false,
                 action: () {
                   setState(() {
                     _isOn = false;

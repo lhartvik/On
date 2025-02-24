@@ -32,7 +32,9 @@ class ViewScreen extends StatelessWidget {
                     ));
                   });
             } else {
-              return Placeholder();
+              return const Center(
+                child: Text('Ingen registreringer ennå'),
+              );
             }
           }),
     );
