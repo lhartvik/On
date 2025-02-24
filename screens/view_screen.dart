@@ -9,34 +9,34 @@ class ViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: LocalDBHelper.instance.readAllLogs(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-              List<Logg> logs = snapshot.data!;
-              return ListView.builder(
-                  itemCount: logs.length,
-                  itemBuilder: (context, index) {
-                    Logg logg = logs[index];
-                    return Card(
-                        child: ListTile(
-                      title: Text(logg.event),
-                      subtitle: Text(logg.timestamp),
-                    ));
-                  });
-            } else {
-              return const Center(
-                child: Text('Ingen registreringer ennå'),
-              );
-            }
-          }),
+        future: LocalDBHelper.instance.readAllLogs(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            List<Logg> logs = snapshot.data!;
+            return ListView.builder(
+              itemCount: logs.length,
+              itemBuilder: (context, index) {
+                Logg logg = logs[index];
+                DateTime tid = DateTime.parse(logg.timestamp).toLocal();
+                return Card(
+                  child: ListTile(
+                    title: Text(logg.event),
+                    subtitle: Text(
+                      "${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}",
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text('Ingen registreringer ennå'));
+          }
+        },
+      ),
     );
   }
 }

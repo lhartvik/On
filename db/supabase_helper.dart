@@ -39,9 +39,12 @@ class SupabaseHelper implements DatabaseHelper {
   }
 
   @override
-  Future<void> insert(String event) async {
+  Future<void> insert(String event, {DateTime? tidspunkt}) async {
     var database = await db;
-    await database.from(_tableName).insert({'event': event});
+    await database.from(_tableName).insert({
+      'event': event,
+      'timestamp': tidspunkt,
+    });
   }
 
   @override

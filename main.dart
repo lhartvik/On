@@ -39,7 +39,7 @@ class OnApp extends StatelessWidget {
       title: 'On!',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       initialRoute: '/',
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.access_time), label: 'Plan'),
           BottomNavigationBarItem(icon: Icon(Icons.cloud_sync), label: 'Sky'),
         ],
-        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimaryFixedVariant,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         onTap: (value) {
           setState(() {

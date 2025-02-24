@@ -16,7 +16,6 @@ class OnScreen extends StatefulWidget {
 
 class _OnScreenState extends State<OnScreen> {
   DateTime? _lastMedicineTaken;
-  bool _isOn = false;
   late Timer _timer;
   String _timeAgo = '';
 
@@ -46,17 +45,6 @@ class _OnScreenState extends State<OnScreen> {
     }
   }
 
-  updateStatus() async {
-    try {
-      final isOn = await LocalDBHelper.instance.lastStatus();
-      setState(() {
-        _isOn = isOn;
-      });
-    } catch (e) {
-      print('Error fetching status: $e');
-    }
-  }
-
   updateTimeAgo() {
     setState(() {
       _timeAgo = Util.timeAgo(_lastMedicineTaken);
@@ -67,7 +55,6 @@ class _OnScreenState extends State<OnScreen> {
   void initState() {
     super.initState();
     updateLastMedicineTaken();
-    updateStatus();
 
     _timer = Timer.periodic(Duration(seconds: 10), (timer) {
       updateTimeAgo();
@@ -83,62 +70,36 @@ class _OnScreenState extends State<OnScreen> {
         _timeAgo = Util.timeAgo(_lastMedicineTaken);
       });
     }
-    if (['On', 'Off'].contains(event)) {
-      setState(() {
-        _isOn = event == 'On';
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: SafeArea(
-        child: Column(
-          spacing: 5,
-          children: [
-            Loggeknapp(
-                tittel: 'Ta medisin',
-                theme: theme,
-                disabled: false,
-                action: () {
-                  setState(() {
-                    _lastMedicineTaken = DateTime.now().toUtc();
-                  });
-                  updateTimeAgo();
-                }),
-            Text('Sist tatt: ${Util.format(_lastMedicineTaken)} (UTC)'),
-            Text(_timeAgo),
-            Loggeknapp(
-                tittel: 'On',
-                theme: theme,
-                disabled: false,
-                action: () {
-                  setState(() {
-                    _isOn = true;
-                  });
-                }),
-            if (_isOn) Text("Du er on!") else Text("Du er off..."),
-            Loggeknapp(
-                tittel: 'Off',
-                theme: theme,
-                disabled: false,
-                action: () {
-                  setState(() {
-                    _isOn = false;
-                  });
-                }),
-            ElevatedButton(
-                onPressed: () {
-                  LocalDBHelper.instance.clearAll();
-                  updateLastMedicineTaken();
-                  updateTimeAgo();
-                },
-                child: Text('Slett alt')),
-          ],
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SafeArea(
+          child: Center(
+            child: SizedBox(
+              width: 300,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 20,
+                children: [
+                  Loggeknapp(tittel: 'Ta medisin'),
+                  Text('Sist tatt: ${Util.format(_lastMedicineTaken)} (UTC)'),
+                  Text(
+                    _timeAgo,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Loggeknapp(tittel: 'On'),
+                  Loggeknapp(tittel: 'Off'),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

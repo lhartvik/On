@@ -24,8 +24,11 @@ class LocalDBHelper implements DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+    return await openDatabase(
+      path,
+      version: _databaseVersion,
+      onCreate: _onCreate,
+    );
   }
 
   Future _onCreate(Database db, int version) async {
@@ -45,11 +48,12 @@ class LocalDBHelper implements DatabaseHelper {
   }
 
   @override
-  Future<Logg> insert(String event) async {
+  Future<Logg> insert(String event, {DateTime? tidspunkt}) async {
     Database db = await instance.database;
+    tidspunkt ??= DateTime.now();
     Map<String, dynamic> eventJson = {
       'event': event,
-      'timestamp': DateTime.now().toUtc().toIso8601String()
+      'timestamp': tidspunkt.toUtc().toIso8601String(),
     };
 
     await db.insert(_logTableName, eventJson);
@@ -59,8 +63,12 @@ class LocalDBHelper implements DatabaseHelper {
 
   Future<void> update(Logg newLog, Logg oldLog) async {
     Database db = await instance.database;
-    await db.update(_logTableName, newLog.toJsonDatabase(),
-        where: 'timestamp = ?', whereArgs: [oldLog.timestamp]);
+    await db.update(
+      _logTableName,
+      newLog.toJsonDatabase(),
+      where: 'timestamp = ?',
+      whereArgs: [oldLog.timestamp],
+    );
   }
 
   @override
@@ -81,12 +89,14 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<DateTime?> lastMedicineTaken() async {
     Database db = await instance.database;
-    var foo = await db.query(_logTableName,
-        columns: ['timestamp'],
-        where: 'event = ?',
-        whereArgs: ['Ta medisin'],
-        orderBy: 'timestamp DESC',
-        limit: 1);
+    var foo = await db.query(
+      _logTableName,
+      columns: ['timestamp'],
+      where: 'event = ?',
+      whereArgs: ['Ta medisin'],
+      orderBy: 'timestamp DESC',
+      limit: 1,
+    );
 
     return foo.isNotEmpty
         ? DateTime.tryParse(foo.first['timestamp'] as String)?.toUtc()
@@ -96,12 +106,14 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<bool> lastStatus() async {
     Database db = await instance.database;
-    var sisteStatus = await db.query(_logTableName,
-        columns: ['event'],
-        where: 'event = ? OR event = ?',
-        whereArgs: ['On', 'Off'],
-        orderBy: 'timestamp DESC',
-        limit: 1);
+    var sisteStatus = await db.query(
+      _logTableName,
+      columns: ['event'],
+      where: 'event = ? OR event = ?',
+      whereArgs: ['On', 'Off'],
+      orderBy: 'timestamp DESC',
+      limit: 1,
+    );
     return sisteStatus.isNotEmpty ? sisteStatus.first['event'] == 'On' : false;
   }
 
@@ -109,8 +121,10 @@ class LocalDBHelper implements DatabaseHelper {
     var database = await instance.database;
     await database.transaction((txn) async {
       for (var logg in value) {
-        await txn.insert(
-            _logTableName, {'event': logg.event, 'timestamp': logg.timestamp});
+        await txn.insert(_logTableName, {
+          'event': logg.event,
+          'timestamp': logg.timestamp,
+        });
       }
     });
   }
@@ -137,8 +151,6 @@ class LocalDBHelper implements DatabaseHelper {
 
   void removePlan(String id) async {
     Database db = await instance.database;
-    await db.delete(_planTableName, where: 'id = ?', whereArgs: [
-      id,
-    ]);
+    await db.delete(_planTableName, where: 'id = ?', whereArgs: [id]);
   }
 }
