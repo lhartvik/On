@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/screens/logg_modal.dart';
+import 'package:on_app/notifiers/statistics.dart';
+import 'package:provider/provider.dart';
 
 class Loggeknapp extends StatefulWidget {
   const Loggeknapp({super.key, required this.tittel});
@@ -14,22 +15,26 @@ class Loggeknapp extends StatefulWidget {
 class _LoggeknappState extends State<Loggeknapp> {
   @override
   Widget build(BuildContext context) {
+    final stats = Provider.of<Statistics>(context, listen: false);
     ThemeData theme = Theme.of(context);
 
-    void handleLongClick() {
-      showModalBottomSheet(
-        useSafeArea: true,
-        isScrollControlled: true,
+    void handleLongClick() async {
+      final now = DateTime.now().toUtc();
+      final pickedTime = await showTimePicker(
         context: context,
-        builder:
-            (ctx) => LoggModal(
-              onAdd:
-                  (DateTime tidspunkt) => LocalDBHelper.instance.insert(
-                    widget.tittel,
-                    tidspunkt: tidspunkt,
-                  ),
-            ),
+        initialTime: TimeOfDay.now(),
       );
+
+      if (pickedTime == null) return;
+      var pickedDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+      LocalDBHelper.instance.insert(widget.tittel, tidspunkt: pickedDateTime);
+      stats.updateLastMedicineTaken(pickedDateTime);
     }
 
     return Center(
@@ -38,7 +43,10 @@ class _LoggeknappState extends State<Loggeknapp> {
         color: theme.colorScheme.primary,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => LocalDBHelper.instance.insert(widget.tittel),
+          onTap: () {
+            LocalDBHelper.instance.insert(widget.tittel);
+            stats.updateLastMedicineTaken(DateTime.now().toUtc());
+          },
           onLongPress: handleLongClick,
           splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),
           child: Container(

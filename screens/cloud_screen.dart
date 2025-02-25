@@ -48,34 +48,38 @@ class _CloudScreenState extends State<CloudScreen> {
           children: [
             Text(_userId != null ? '$_userId innlogget' : 'Ikke innlogget'),
             DatabaseWidget(
-                databasehelper: LocalDBHelper.instance,
-                icon: Icon(Icons.smartphone)),
+              databasehelper: LocalDBHelper.instance,
+              icon: Icon(Icons.smartphone),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                    onPressed: () {
-                      LocalDBHelper.instance.readAllLogs().then((logs) {
-                        SupabaseHelper.instance.insertAllLogs(logs);
-                        setState(() {});
-                      });
-                    },
-                    icon: Icon(Icons.arrow_downward_rounded),
-                    label: Text('Last opp')),
+                  onPressed: () {
+                    LocalDBHelper.instance.readAllLogs().then((logs) {
+                      SupabaseHelper.instance.insertAllLogs(logs);
+                      setState(() {});
+                    });
+                  },
+                  icon: Icon(Icons.arrow_downward_rounded),
+                  label: Text('Last opp'),
+                ),
                 ElevatedButton.icon(
-                    onPressed: () {
-                      SupabaseHelper.instance.readAllLogs().then((logs) {
-                        LocalDBHelper.instance.insertAllLogs(logs);
-                        setState(() {});
-                      });
-                    },
-                    icon: Icon(Icons.arrow_upward_outlined),
-                    label: Text('Last ned')),
+                  onPressed: () {
+                    SupabaseHelper.instance.readAllLogs().then((logs) {
+                      LocalDBHelper.instance.insertAllLogs(logs);
+                      setState(() {});
+                    });
+                  },
+                  icon: Icon(Icons.arrow_upward_outlined),
+                  label: Text('Last ned'),
+                ),
               ],
             ),
             DatabaseWidget(
-                databasehelper: SupabaseHelper.instance,
-                icon: Icon(Icons.cloud))
+              databasehelper: SupabaseHelper.instance,
+              icon: Icon(Icons.cloud),
+            ),
           ],
         ),
       ),
@@ -103,16 +107,12 @@ class _DatabaseWidgetState extends State<DatabaseWidget> {
   Timer? _timer;
 
   updateLastMedicineTaken() async {
-    try {
-      await widget.databasehelper.lastMedicineTaken().then((value) {
-        setState(() {
-          _lastMedicineTaken = value;
-          _timeAgo = Util.timeAgo(value);
-        });
+    await widget.databasehelper.lastMedicineTaken().then((value) {
+      setState(() {
+        _lastMedicineTaken = value;
+        _timeAgo = Util.timeAgo(value);
       });
-    } catch (e) {
-      print('Error fetching last medicine taken: $e');
-    }
+    });
   }
 
   updateTimeAgo() {
@@ -158,28 +158,28 @@ class _DatabaseWidgetState extends State<DatabaseWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: widget.databasehelper.readAllLogs(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+      future: widget.databasehelper.readAllLogs(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          String text;
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            text = 'Tom tabell';
           } else {
-            String text;
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              text = 'Tom tabell';
-            } else {
-              List<Logg> logs = snapshot.data!;
-              logs.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-              text = logs.length.toString();
-            }
-            return Card(
-                child: ListTile(
+            List<Logg> logs = snapshot.data!;
+            logs.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+            text = logs.length.toString();
+          }
+          return Card(
+            child: ListTile(
               title: Text(text),
               leading: widget.icon,
               subtitle: Text(_timeAgo),
-            ));
-          }
-        });
+            ),
+          );
+        }
+      },
+    );
   }
 }

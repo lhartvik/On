@@ -28,12 +28,12 @@ class _NewPlanState extends State<NewPlan> {
   void _presentTimePicker() async {
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: _selectedTime ??
+      initialTime:
+          _selectedTime ??
           widget.copyPlan?.time ??
           TimeOfDay(hour: 12, minute: 0),
     );
 
-    print(pickedTime);
     if (pickedTime == null) {
       return;
     }
@@ -49,10 +49,7 @@ class _NewPlanState extends State<NewPlan> {
       return;
     }
 
-    final newPlan = Plan(
-      medicine: enteredMedicine,
-      time: _selectedTime!,
-    );
+    final newPlan = Plan(medicine: enteredMedicine, time: _selectedTime!);
 
     widget.onAddPlan(newPlan);
 
@@ -78,15 +75,20 @@ class _NewPlanState extends State<NewPlan> {
           Row(
             children: [
               Expanded(
-                  child: Text(
-                      '${_selectedTime!.hour.toString().padLeft(2, '0')}: ${_selectedTime!.minute.toString().padLeft(2, '0')}')),
+                child: Text(
+                  '${_selectedTime!.hour.toString().padLeft(2, '0')}: ${_selectedTime!.minute.toString().padLeft(2, '0')}',
+                ),
+              ),
               IconButton(
-                  onPressed: _presentTimePicker, icon: Icon(Icons.access_time)),
+                onPressed: _presentTimePicker,
+                icon: Icon(Icons.access_time),
+              ),
               Spacer(),
               ElevatedButton.icon(
-                  onPressed: Navigator.of(context).pop,
-                  icon: Icon(Icons.cancel),
-                  label: const Text('Avbryt')),
+                onPressed: Navigator.of(context).pop,
+                icon: Icon(Icons.cancel),
+                label: const Text('Avbryt'),
+              ),
               ElevatedButton(
                 onPressed: _submitData,
                 child: const Text('Legg til plan'),

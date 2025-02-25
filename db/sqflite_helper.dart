@@ -50,7 +50,7 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<Logg> insert(String event, {DateTime? tidspunkt}) async {
     Database db = await instance.database;
-    tidspunkt ??= DateTime.now();
+    tidspunkt ??= DateTime.now().toUtc();
     Map<String, dynamic> eventJson = {
       'event': event,
       'timestamp': tidspunkt.toUtc().toIso8601String(),
@@ -132,8 +132,6 @@ class LocalDBHelper implements DatabaseHelper {
   Future<List<Plan>> getMedicinePlan() async {
     Database db = await instance.database;
     var dbentries = await db.query(_planTableName);
-
-    print(dbentries);
 
     return dbentries.isNotEmpty
         ? dbentries.map((entry) => Plan.fromJsonDatabase(entry)).toList()

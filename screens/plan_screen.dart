@@ -44,56 +44,52 @@ class _PlanScreenState extends State<PlanScreen> {
     LocalDBHelper.instance.removePlan(plan.id);
     setState(() {});
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${plan.medicine} fjernet'),
-      action: SnackBarAction(
-        label: 'IKKE SLETT LIKEVEL',
-        onPressed: () {
-          LocalDBHelper.instance.insertPlan(plan);
-          setState(() {});
-        },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${plan.medicine} fjernet'),
+        action: SnackBarAction(
+          label: 'IKKE SLETT LIKEVEL',
+          onPressed: () {
+            LocalDBHelper.instance.insertPlan(plan);
+            setState(() {});
+          },
+        ),
       ),
-    ));
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Planscreen build');
-
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Plan'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: _openAppPlanOverlay,
-            ),
-          ],
-        ),
-        body: FutureBuilder(
-          builder: (ctx, planData) {
-            if (planData.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (planData.connectionState == ConnectionState.done &&
-                planData.hasData &&
-                planData.data!.isNotEmpty) {
-              return PlanList(
-                  plannedMeds: planData.data as List<Plan>,
-                  onRemovePlan: _removePlan,
-                  copyPlan: copyPlan);
-            } else if (planData.hasError) {
-              return Center(
-                child: Text('Error: ${planData.error}'),
-              );
-            } else {
-              return const Center(
-                child: Text('Ingen plan ennå'),
-              );
-            }
-          },
-          future: LocalDBHelper.instance.getMedicinePlan(),
-        ));
+      appBar: AppBar(
+        title: const Text('Plan'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _openAppPlanOverlay,
+          ),
+        ],
+      ),
+      body: FutureBuilder(
+        builder: (ctx, planData) {
+          if (planData.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (planData.connectionState == ConnectionState.done &&
+              planData.hasData &&
+              planData.data!.isNotEmpty) {
+            return PlanList(
+              plannedMeds: planData.data as List<Plan>,
+              onRemovePlan: _removePlan,
+              copyPlan: copyPlan,
+            );
+          } else if (planData.hasError) {
+            return Center(child: Text('Error: ${planData.error}'));
+          } else {
+            return const Center(child: Text('Ingen plan ennå'));
+          }
+        },
+        future: LocalDBHelper.instance.getMedicinePlan(),
+      ),
+    );
   }
 }

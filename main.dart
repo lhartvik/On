@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:on_app/notifiers/statistics.dart';
 import 'package:on_app/screens/on_screen.dart';
 import 'package:on_app/screens/view_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'screens/cloud_screen.dart';
-import 'screens/plan_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await dotenv.load(fileName: "secrets");
   } catch (e) {
-    print("With exception: $e");
     throw Exception('Missing secrets file in root directory');
   }
   await Supabase.initialize(
@@ -23,7 +23,12 @@ Future<void> main() async {
   );
   initializeDateFormatting();
 
-  runApp(const OnApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (BuildContext context) => Statistics(),
+      child: OnApp(),
+    ),
+  );
 }
 
 class OnApp extends StatelessWidget {
@@ -65,7 +70,6 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const OnScreen(),
     const ViewScreen(),
-    const PlanScreen(),
     const CloudScreen(),
   ];
 
@@ -82,7 +86,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Logg',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Vis'),
-          BottomNavigationBarItem(icon: Icon(Icons.access_time), label: 'Plan'),
           BottomNavigationBarItem(icon: Icon(Icons.cloud_sync), label: 'Sky'),
         ],
         selectedItemColor: Theme.of(context).colorScheme.onPrimaryFixedVariant,
