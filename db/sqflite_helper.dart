@@ -4,6 +4,7 @@ import 'package:on_app/model/logg.dart';
 import 'package:on_app/model/plan.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 import 'database_helper.dart';
 
@@ -34,6 +35,7 @@ class LocalDBHelper implements DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $_logTableName (
+        id TEXT PRIMARY KEY,
         event TEXT NOT NULL,
         timestamp TEXT
       )
@@ -52,6 +54,7 @@ class LocalDBHelper implements DatabaseHelper {
     Database db = await instance.database;
     tidspunkt ??= DateTime.now().toUtc();
     Map<String, dynamic> eventJson = {
+      'id': Uuid().v4(),
       'event': event,
       'timestamp': tidspunkt.toUtc().toIso8601String(),
     };
@@ -122,6 +125,7 @@ class LocalDBHelper implements DatabaseHelper {
     await database.transaction((txn) async {
       for (var logg in value) {
         await txn.insert(_logTableName, {
+          'id': logg.id,
           'event': logg.event,
           'timestamp': logg.timestamp,
         });

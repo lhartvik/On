@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:on_app/components/loggeknapp.dart';
 import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/notifiers/statistics.dart';
+import 'package:on_app/widgets/loggeknapp.dart';
 import 'package:provider/provider.dart';
 
 class OnScreen extends StatefulWidget {
@@ -54,6 +54,17 @@ class _OnScreenState extends State<OnScreen> {
                   Text(stats.timeSinceLastMedicineTakenString),
                   Loggeknapp(tittel: 'On'),
                   Loggeknapp(tittel: 'Off'),
+                  InkWell(
+                    onLongPress: () {
+                      LocalDBHelper.instance.clearAll();
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Slettet alt')));
+                      stats.updateLastMedicineTaken(null);
+                      setState(() {});
+                    },
+                    child: Text('Slett alt'),
+                  ),
                 ],
               ),
             ),

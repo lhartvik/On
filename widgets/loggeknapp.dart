@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/notifiers/statistics.dart';
+import 'package:on_app/util/util.dart';
 import 'package:provider/provider.dart';
 
 class Loggeknapp extends StatefulWidget {
@@ -19,20 +20,13 @@ class _LoggeknappState extends State<Loggeknapp> {
     ThemeData theme = Theme.of(context);
 
     void handleLongClick() async {
-      final now = DateTime.now().toUtc();
       final pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
 
       if (pickedTime == null) return;
-      var pickedDateTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
+      var pickedDateTime = Util.today(pickedTime);
       LocalDBHelper.instance.insert(widget.tittel, tidspunkt: pickedDateTime);
       stats.updateLastMedicineTaken(pickedDateTime);
     }
@@ -45,7 +39,9 @@ class _LoggeknappState extends State<Loggeknapp> {
           borderRadius: BorderRadius.circular(16),
           onTap: () {
             LocalDBHelper.instance.insert(widget.tittel);
-            stats.updateLastMedicineTaken(DateTime.now().toUtc());
+            if (widget.tittel == "Ta medisin") {
+              stats.updateLastMedicineTaken(DateTime.now().toUtc());
+            }
           },
           onLongPress: handleLongClick,
           splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/model/logg.dart';
+import 'package:on_app/util/util.dart';
 
 class ViewScreen extends StatelessWidget {
   const ViewScreen({super.key});
@@ -21,13 +22,14 @@ class ViewScreen extends StatelessWidget {
               itemCount: logs.length,
               itemBuilder: (context, index) {
                 Logg logg = logs[index];
-                DateTime tid = DateTime.parse(logg.timestamp).toLocal();
+                DateTime tid = DateTime.parse(logg.timestamp);
                 return Card(
                   child: ListTile(
                     title: Text(logg.event),
-                    subtitle: Text(
-                      "${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}",
+                    trailing: Text(
+                      "id (S.E.P.): ${logg.id.substring(logg.id.length - 6)}",
                     ),
+                    subtitle: Text("${Util.format(tid)}"),
                   ),
                 );
               },

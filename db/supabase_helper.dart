@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:on_app/db/database_helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../model/logg.dart';
 
@@ -33,7 +34,11 @@ class SupabaseHelper implements DatabaseHelper {
     var database = await db;
     List<Map<String, dynamic>> data =
         value.map((logg) {
-          return {'event': logg.event, 'timestamp': logg.timestamp};
+          return {
+            'id': logg.id,
+            'event': logg.event,
+            'timestamp': logg.timestamp,
+          };
         }).toList();
     await database.from(_tableName).upsert(data, ignoreDuplicates: true);
   }
@@ -42,6 +47,7 @@ class SupabaseHelper implements DatabaseHelper {
   Future<void> insert(String event, {DateTime? tidspunkt}) async {
     var database = await db;
     await database.from(_tableName).insert({
+      'id': Uuid().v4(),
       'event': event,
       'timestamp': tidspunkt,
     });
@@ -54,6 +60,7 @@ class SupabaseHelper implements DatabaseHelper {
         ? data
             .map(
               (entry) => Logg(
+                id: entry['id'] as String,
                 event: entry['event'] as String,
                 timestamp: entry['timestamp'] as String,
               ),

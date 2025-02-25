@@ -7,7 +7,7 @@ import 'package:on_app/model/logg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../db/database_helper.dart';
-import '../util/knapperegler.dart';
+import '../util/util.dart';
 
 class CloudScreen extends StatefulWidget {
   const CloudScreen({super.key});
