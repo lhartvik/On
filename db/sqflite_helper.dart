@@ -92,7 +92,7 @@ class LocalDBHelper implements DatabaseHelper {
   @override
   Future<DateTime?> lastMedicineTaken() async {
     Database db = await instance.database;
-    var foo = await db.query(
+    var queryResult = await db.query(
       _logTableName,
       columns: ['timestamp'],
       where: 'event = ?',
@@ -101,8 +101,23 @@ class LocalDBHelper implements DatabaseHelper {
       limit: 1,
     );
 
-    return foo.isNotEmpty
-        ? DateTime.tryParse(foo.first['timestamp'] as String)?.toUtc()
+    return queryResult.isNotEmpty
+        ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc()
+        : null;
+  }
+
+  @override
+  Future<DateTime?> lastLog() async {
+    Database db = await instance.database;
+    var queryResult = await db.query(
+      _logTableName,
+      columns: ['timestamp'],
+      orderBy: 'timestamp DESC',
+      limit: 1,
+    );
+
+    return queryResult.isNotEmpty
+        ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc()
         : null;
   }
 

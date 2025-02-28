@@ -3,11 +3,17 @@ import 'package:on_app/util/util.dart';
 
 class Statistics extends ChangeNotifier {
   DateTime? _lastMedicineTaken;
+  DateTime? _lastLog;
 
   DateTime? get lastMedicineTaken => _lastMedicineTaken;
+  DateTime? get lastLog => _lastLog;
 
   String get lastMedicineTakenString {
-    return Util.format(_lastMedicineTaken?.toLocal()) ;
+    return Util.format(_lastMedicineTaken?.toLocal());
+  }
+
+  String get lastLogString {
+    return Util.format(_lastLog?.toLocal());
   }
 
   void updateLastMedicineTaken(DateTime? value) {
@@ -15,16 +21,16 @@ class Statistics extends ChangeNotifier {
     notifyListeners();
   }
 
-  Duration get timeSinceLastMedicineTaken {
-    final now = DateTime.now().toUtc();
-    if (_lastMedicineTaken == null) {
-      return Duration.zero;
-    }
-    return now.difference(_lastMedicineTaken!);
+  void updateLastLog(DateTime? value) {
+    _lastLog = value;
+    notifyListeners();
   }
 
   String get timeSinceLastMedicineTakenString {
-    final duration = timeSinceLastMedicineTaken;
-    return Util.formatTidSiden(duration);
+    return Util.formatTidSiden(Util.timeSince(_lastMedicineTaken));
+  }
+
+  String get timeSinceLastLogString {
+    return Util.formatTidSiden(Util.timeSince(_lastLog));
   }
 }

@@ -19,6 +19,22 @@ class _LoggeknappState extends State<Loggeknapp> {
     final stats = Provider.of<Statistics>(context, listen: false);
     ThemeData theme = Theme.of(context);
 
+    void _update() {
+      LocalDBHelper.instance.lastMedicineTaken().then((tid) {
+        stats.updateLastMedicineTaken(tid);
+      });
+      LocalDBHelper.instance.lastLog().then((tid) {
+        stats.updateLastLog(tid);
+      });
+    }
+
+    void handleTap() async {
+      DateTime tid = DateTime.now().toUtc();
+      LocalDBHelper.instance.insert(widget.tittel, tidspunkt: tid).then((x) {
+        _update();
+      });
+    }
+
     void handleLongClick() async {
       final pickedTime = await showTimePicker(
         context: context,
@@ -27,8 +43,11 @@ class _LoggeknappState extends State<Loggeknapp> {
 
       if (pickedTime == null) return;
       var pickedDateTime = Util.today(pickedTime);
-      LocalDBHelper.instance.insert(widget.tittel, tidspunkt: pickedDateTime);
-      stats.updateLastMedicineTaken(pickedDateTime);
+      LocalDBHelper.instance
+          .insert(widget.tittel, tidspunkt: pickedDateTime)
+          .then((log) {
+            _update();
+          });
     }
 
     return Center(
@@ -37,12 +56,7 @@ class _LoggeknappState extends State<Loggeknapp> {
         color: theme.colorScheme.primary,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            LocalDBHelper.instance.insert(widget.tittel);
-            if (widget.tittel == "Ta medisin") {
-              stats.updateLastMedicineTaken(DateTime.now().toUtc());
-            }
-          },
+          onTap: handleTap,
           onLongPress: handleLongClick,
           splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),
           child: Container(

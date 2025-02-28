@@ -58,4 +58,12 @@ class Util {
     to = DateTime(to.year, to.month, to.day);
     return (to.difference(from).inHours / 24).round().abs();
   }
+
+  static timeSince(DateTime? time) {
+    final now = DateTime.now().toUtc();
+    if (time == null) {
+      return Duration.zero;
+    }
+    return now.difference(time);
+  }
 }

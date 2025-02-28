@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:on_app/notifiers/statistics.dart';
+import 'package:on_app/notifiers/statistics_cloud.dart';
 import 'package:on_app/screens/on_screen.dart';
 import 'package:on_app/screens/view_screen.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +25,11 @@ Future<void> main() async {
   initializeDateFormatting();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (BuildContext context) => Statistics(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => Statistics()),
+        ChangeNotifierProvider(create: (context) => StatisticsCloud()),
+      ],
       child: OnApp(),
     ),
   );

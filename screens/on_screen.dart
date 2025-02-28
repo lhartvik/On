@@ -54,6 +54,7 @@ class _OnScreenState extends State<OnScreen> {
                   Text(stats.timeSinceLastMedicineTakenString),
                   Loggeknapp(tittel: 'On'),
                   Loggeknapp(tittel: 'Off'),
+                  Text(stats.timeSinceLastLogString),
                   InkWell(
                     onLongPress: () {
                       LocalDBHelper.instance.clearAll();
@@ -61,6 +62,7 @@ class _OnScreenState extends State<OnScreen> {
                         context,
                       ).showSnackBar(SnackBar(content: Text('Slettet alt')));
                       stats.updateLastMedicineTaken(null);
+                      stats.updateLastLog(null);
                       setState(() {});
                     },
                     child: Text('Slett alt'),

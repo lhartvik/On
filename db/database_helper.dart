@@ -5,5 +5,6 @@ abstract class DatabaseHelper {
   Future<List<Logg>> readAllLogs();
   void clearAll();
   Future<DateTime?> lastMedicineTaken();
+  Future<DateTime?> lastLog();
   Future<bool> lastStatus();
 }

@@ -79,14 +79,30 @@ class SupabaseHelper implements DatabaseHelper {
   @override
   Future<DateTime?> lastMedicineTaken() async {
     var database = await db;
-    PostgrestList list = await database
+    PostgrestList queryResult = await database
         .from(_tableName)
         .select('timestamp')
         .eq('event', 'Ta medisin')
         .order('timestamp', ascending: false)
         .limit(1);
 
-    return DateTime.tryParse(list.firstOrNull?['timestamp'])?.toUtc();
+    return queryResult.isNotEmpty
+        ? DateTime.tryParse(queryResult.firstOrNull?['timestamp'])?.toUtc()
+        : null;
+  }
+
+  @override
+  Future<DateTime?> lastLog() async {
+    var database = await db;
+    PostgrestList queryResult = await database
+        .from(_tableName)
+        .select('timestamp')
+        .order('timestamp', ascending: false)
+        .limit(1);
+
+    return queryResult.isNotEmpty
+        ? DateTime.tryParse(queryResult.firstOrNull?['timestamp'])?.toUtc()
+        : null;
   }
 
   @override

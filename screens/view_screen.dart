@@ -29,7 +29,7 @@ class ViewScreen extends StatelessWidget {
                     trailing: Text(
                       "id (S.E.P.): ${logg.id.substring(logg.id.length - 6)}",
                     ),
-                    subtitle: Text("${Util.format(tid)}"),
+                    subtitle: Text(Util.format(tid)),
                   ),
                 );
               },
