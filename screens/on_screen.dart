@@ -26,9 +26,8 @@ class _OnScreenState extends State<OnScreen> {
   void initState() {
     super.initState();
     final stats = Provider.of<Statistics>(context, listen: false);
-    LocalDBHelper.instance.lastMedicineTaken().then((value) {
-      stats.updateLastMedicineTaken(value);
-    });
+    stats.updateLastMedicineTaken();
+    stats.updateLastLog();
     _timer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {});
     });
@@ -56,14 +55,16 @@ class _OnScreenState extends State<OnScreen> {
                   Loggeknapp(tittel: 'Off'),
                   Text(stats.timeSinceLastLogString),
                   InkWell(
-                    onLongPress: () {
+                    onLongPress: () async {
                       LocalDBHelper.instance.clearAll();
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('Slettet alt')));
-                      stats.updateLastMedicineTaken(null);
-                      stats.updateLastLog(null);
-                      setState(() {});
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('Slettet alt')))
+                          .closed
+                          .then((reason) {
+                            stats.updateLastMedicineTaken();
+                            stats.updateLastLog();
+                            setState(() {});
+                          });
                     },
                     child: Text('Slett alt'),
                   ),

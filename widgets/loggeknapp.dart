@@ -19,19 +19,15 @@ class _LoggeknappState extends State<Loggeknapp> {
     final stats = Provider.of<Statistics>(context, listen: false);
     ThemeData theme = Theme.of(context);
 
-    void _update() {
-      LocalDBHelper.instance.lastMedicineTaken().then((tid) {
-        stats.updateLastMedicineTaken(tid);
-      });
-      LocalDBHelper.instance.lastLog().then((tid) {
-        stats.updateLastLog(tid);
-      });
+    void update() {
+      stats.updateLastMedicineTaken();
+      stats.updateLastLog();
     }
 
     void handleTap() async {
       DateTime tid = DateTime.now().toUtc();
       LocalDBHelper.instance.insert(widget.tittel, tidspunkt: tid).then((x) {
-        _update();
+        update();
       });
     }
 
@@ -46,7 +42,7 @@ class _LoggeknappState extends State<Loggeknapp> {
       LocalDBHelper.instance
           .insert(widget.tittel, tidspunkt: pickedDateTime)
           .then((log) {
-            _update();
+            update();
           });
     }
 

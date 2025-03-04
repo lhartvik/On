@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:on_app/db/sqflite_helper.dart';
 import 'package:on_app/db/supabase_helper.dart';
 import 'package:on_app/notifiers/statistics.dart';
-import 'package:on_app/notifiers/statistics_cloud.dart';
-import 'package:on_app/widgets/database_widget.dart';
+import 'package:on_app/widgets/cloud_db_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CloudScreen extends StatefulWidget {
   const CloudScreen({super.key});
@@ -18,24 +18,26 @@ class CloudScreen extends StatefulWidget {
 class _CloudScreenState extends State<CloudScreen> {
   String? _userId;
   StreamSubscription? _authSubscription;
+  RealtimeChannel? _subscription;
 
   @override
   void initState() {
     final stats = Provider.of<Statistics>(context, listen: false);
-    final cloudstats = Provider.of<StatisticsCloud>(context, listen: false);
     LocalDBHelper.instance.lastLog().then((value) {
-      stats.updateLastLog(value);
+      stats.updateLastLog();
     });
     SupabaseHelper.instance.auth.then((auth) {
       _authSubscription = auth.onAuthStateChange.listen((data) {
         if (mounted) {
-          SupabaseHelper.instance.lastLog().then((value) {
-            cloudstats.updateLastLog(value);
-          });
           setState(() {
             _userId = data.session?.user.email;
           });
         }
+      });
+    });
+    _subscription = SupabaseHelper.instance.subscription((payload) {
+      setState(() {
+        stats.updateLastCloudLog();
       });
     });
     super.initState();
@@ -43,20 +45,25 @@ class _CloudScreenState extends State<CloudScreen> {
 
   @override
   void dispose() {
+    if (_subscription != null) _subscription!.unsubscribe();
     _authSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final stats = Provider.of<Statistics>(context);
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Text(_userId != null ? '$_userId innlogget' : 'Ikke innlogget'),
-            DatabaseWidget(
-              databasehelper: LocalDBHelper.instance,
-              icon: Icon(Icons.smartphone),
+            Card(
+              child: ListTile(
+                title: Text("Lokal database"),
+                leading: Icon(Icons.smartphone),
+                subtitle: Text("Sist registrert: ${stats.lastLogString}"),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,8 +72,14 @@ class _CloudScreenState extends State<CloudScreen> {
                   onPressed: () {
                     LocalDBHelper.instance.readAllLogs().then((locallogs) {
                       SupabaseHelper.instance.readAllLogs().then((cloudlogs) {
-                        locallogs.removeWhere(cloudlogs.contains);
-                        SupabaseHelper.instance.insertAllLogs(locallogs);
+                        locallogs.removeWhere(
+                          (x) => cloudlogs.any((y) => x.id == y.id),
+                        );
+                        SupabaseHelper.instance.insertAllLogs(locallogs).then((
+                          x,
+                        ) {
+                          stats.updateLastCloudLog();
+                        });
                       });
                     });
                   },
@@ -80,7 +93,11 @@ class _CloudScreenState extends State<CloudScreen> {
                         cloudlogs.removeWhere(
                           (x) => locallogs.any((y) => x.id == y.id),
                         );
-                        LocalDBHelper.instance.insertAllLogs(cloudlogs);
+                        LocalDBHelper.instance.insertAllLogs(cloudlogs).then((
+                          x,
+                        ) {
+                          stats.updateLastLog();
+                        });
                       });
                     });
                   },
@@ -89,10 +106,7 @@ class _CloudScreenState extends State<CloudScreen> {
                 ),
               ],
             ),
-            DatabaseWidget(
-              databasehelper: SupabaseHelper.instance,
-              icon: Icon(Icons.cloud),
-            ),
+            CloudDbWidget(),
           ],
         ),
       ),

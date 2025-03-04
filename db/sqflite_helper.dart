@@ -135,7 +135,7 @@ class LocalDBHelper implements DatabaseHelper {
     return sisteStatus.isNotEmpty ? sisteStatus.first['event'] == 'On' : false;
   }
 
-  void insertAllLogs(List<Logg> value) async {
+  Future<void> insertAllLogs(List<Logg> value) async {
     var database = await instance.database;
     await database.transaction((txn) async {
       for (var logg in value) {

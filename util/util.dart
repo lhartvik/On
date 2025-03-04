@@ -66,4 +66,21 @@ class Util {
     }
     return now.difference(time);
   }
+
+  static String tidString(DateTime? tid) {
+    if (tid == null) {
+      return 'Aldri';
+    }
+    DateTime now = DateTime.now().toUtc();
+    DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
+    if (tid.year == now.year && tid.month == now.month && tid.day == now.day) {
+      return '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}';
+    } else if (tid.year == yesterday.year &&
+        tid.month == yesterday.month &&
+        tid.day == yesterday.day) {
+      return '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')} i går';
+    } else {
+      return '${tid.day.toString().padLeft(2, '0')}.${tid.month.toString().padLeft(2, '0')}.${tid.year}';
+    }
+  }
 }

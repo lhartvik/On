@@ -30,7 +30,7 @@ class SupabaseHelper implements DatabaseHelper {
     return await db.then((it) => it.auth);
   }
 
-  void insertAllLogs(List<Logg> value) async {
+  Future<void> insertAllLogs(List<Logg> value) async {
     var database = await db;
     List<Map<String, dynamic>> data =
         value.map((logg) {
@@ -55,7 +55,12 @@ class SupabaseHelper implements DatabaseHelper {
 
   @override
   Future<List<Logg>> readAllLogs() async {
-    var data = await db.then((database) => database.from(_tableName).select());
+    var data = await db.then(
+      (database) => database
+          .from(_tableName)
+          .select()
+          .order('timestamp', ascending: true),
+    );
     return data.isNotEmpty
         ? data
             .map(
