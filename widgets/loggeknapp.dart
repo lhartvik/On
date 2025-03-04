@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/notifiers/statistics.dart';
-import 'package:on_app/util/util.dart';
+import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/notifiers/statistics.dart';
+import 'package:onlight/util/util.dart';
 import 'package:provider/provider.dart';
 
 class Loggeknapp extends StatefulWidget {

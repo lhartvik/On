@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/model/logg.dart';
-import 'package:on_app/util/util.dart';
+import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/model/logg.dart';
+import 'package:onlight/util/util.dart';
 
-class ViewScreen extends StatelessWidget {
+class ViewScreen extends StatefulWidget {
   const ViewScreen({super.key});
+
+  @override
+  State<ViewScreen> createState() => _ViewScreenState();
+}
+
+class _ViewScreenState extends State<ViewScreen> {
+  void _handleLongPress(Logg logg) async {
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime == null) return;
+    var pickedDateTime = Util.today(pickedTime);
+
+    Logg newLogg = Logg(
+      id: logg.id,
+      event: logg.event,
+      timestamp: pickedDateTime.toIso8601String(),
+    );
+    LocalDBHelper.instance.update(newLogg, logg).then((log) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +47,42 @@ class ViewScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 Logg logg = logs[index];
                 DateTime tid = DateTime.parse(logg.timestamp);
-                return Card(
-                  child: ListTile(
-                    title: Text(logg.event),
-                    trailing: Text(
-                      "id (S.E.P.): ${logg.id.substring(logg.id.length - 6)}",
+                return InkWell(
+                  onLongPress: () {
+                    _handleLongPress(logg);
+                  },
+                  child: Dismissible(
+                    key: ValueKey(logg.id),
+                    onDismissed: (direction) {
+                      LocalDBHelper.instance.delete(logg.id).then((id) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp))} removed',
+                              ),
+                              action: SnackBarAction(
+                                label: 'UNDO',
+                                onPressed: () {
+                                  LocalDBHelper.instance.insert(
+                                    logg.event,
+                                    id: logg.id,
+                                    tidspunkt: DateTime.parse(logg.timestamp),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      });
+                    },
+                    child: Card(
+                      child: ListTile(
+                        title: Text(logg.event),
+                        trailing: Text(Util.format(tid)),
+                      ),
                     ),
-                    subtitle: Text(Util.format(tid)),
                   ),
                 );
               },

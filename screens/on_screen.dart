@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/notifiers/statistics.dart';
-import 'package:on_app/widgets/loggeknapp.dart';
+import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/notifiers/statistics.dart';
+import 'package:onlight/widgets/loggeknapp.dart';
 import 'package:provider/provider.dart';
 
 class OnScreen extends StatefulWidget {

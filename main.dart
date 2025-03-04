@@ -1,26 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:on_app/notifiers/statistics.dart';
-import 'package:on_app/screens/on_screen.dart';
-import 'package:on_app/screens/view_screen.dart';
+import 'package:onlight/notifiers/statistics.dart';
+import 'package:onlight/screens/on_screen.dart';
+import 'package:onlight/screens/view_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
-import 'screens/cloud_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await dotenv.load(fileName: "secrets");
-  } catch (e) {
-    throw Exception('Missing secrets file in root directory');
-  }
-  await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL'] ?? '',
-    anonKey: dotenv.env['SUPABASE_KEY'] ?? '',
-    realtimeClientOptions: const RealtimeClientOptions(eventsPerSecond: 2),
-  );
   initializeDateFormatting();
 
   runApp(
@@ -64,11 +50,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const OnScreen(),
-    const ViewScreen(),
-    const CloudScreen(),
-  ];
+  final List<Widget> _screens = [const OnScreen(), const ViewScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +65,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Logg',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Vis'),
-          BottomNavigationBarItem(icon: Icon(Icons.cloud_sync), label: 'Sky'),
         ],
         selectedItemColor: Theme.of(context).colorScheme.onPrimaryFixedVariant,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
