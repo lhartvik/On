@@ -62,7 +62,7 @@ class _ViewScreenState extends State<ViewScreen> {
                                 '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp))} removed',
                               ),
                               action: SnackBarAction(
-                                label: 'UNDO',
+                                label: 'Angre',
                                 onPressed: () {
                                   LocalDBHelper.instance.insert(
                                     logg.event,

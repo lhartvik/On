@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onlight/notifiers/statistics.dart';
 import 'package:onlight/screens/on_screen.dart';
+import 'package:onlight/screens/stats_screen.dart';
 import 'package:onlight/screens/view_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -34,6 +35,7 @@ class OnApp extends StatelessWidget {
       routes: {
         '/on': (context) => OnScreen(),
         '/view': (context) => ViewScreen(),
+        '/stats': (context) => StatsScreen(),
       },
       home: HomePage(),
     );
@@ -50,7 +52,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [const OnScreen(), const ViewScreen()];
+  final List<Widget> _screens = [
+    const OnScreen(),
+    const ViewScreen(),
+    const StatsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +71,7 @@ class _HomePageState extends State<HomePage> {
             label: 'Logg',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Vis'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
         ],
         selectedItemColor: Theme.of(context).colorScheme.onPrimaryFixedVariant,
         unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,

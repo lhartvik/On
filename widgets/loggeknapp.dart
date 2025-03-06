@@ -56,7 +56,7 @@ class _LoggeknappState extends State<Loggeknapp> {
           onLongPress: handleLongClick,
           splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),
           child: Container(
-            width: double.infinity,
+            width: 200,
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
