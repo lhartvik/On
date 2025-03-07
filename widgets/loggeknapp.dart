@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_app/db/sqflite_helper.dart';
-import 'package:on_app/notifiers/statistics.dart';
-import 'package:on_app/util/util.dart';
+import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/notifiers/statistics.dart';
+import 'package:onlight/util/util.dart';
 import 'package:provider/provider.dart';
 
 class Loggeknapp extends StatefulWidget {
@@ -56,7 +56,7 @@ class _LoggeknappState extends State<Loggeknapp> {
           onLongPress: handleLongClick,
           splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),
           child: Container(
-            width: double.infinity,
+            width: 200,
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),

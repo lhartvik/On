@@ -6,45 +6,23 @@ On er laget for å tracke On og Off-perioder når man er nybegynner på å ha Pa
 
 1. Generere prosjekt
 ```
-flutter create on_app
+flutter create onlight
 ````
 
-Jeg har sjekket inn "lib"-folderen på github. Man må softlinke eller sjekke ut koden så den erstatter lib-folderen som ble generert av flutter create.
+2. Sjekke ut koden i lib-folderen
 
-Kopier secrets-filen inn i mappen on_app, rotmappen til flutterapplikasjonen. Denne fila inneholder SUPABASE_URL, SUPABASE_KEY, GOOGLE_CLIENT_ID, WEB_CLIENT_ID og IOS_CLIENT_ID.
-Hvis du ikke vil få fila fra meg kan du opprette et supabaseprosjekt og koble dette til Google-auth selv, for å styre dataene selv.
+3. Gå gjennom alle dart-filer, markere import-linjene som feiler, og få VSCode til å legge til riktig avhengighet(Command .)
 
-Man må legge til følgende i pubspec.yaml, som betyr at filen med filnavn "secrets" tas med i bygget:
-```
-flutter:
-    assets:
-        - secrets
+I skrivende tid er det disse: 
+
 ````
+  collection: ^1.19.1
+  intl: ^0.20.2
+  path: ^1.9.1
+  provider: ^6.1.2
+  sqflite: ^2.4.2
+  uuid: ^4.5.1
+````
+Men versjonene vil endre seg etter at jeg har skrevet dette og jeg legger helt sikkert til flere uten å oppdatere README
 
-For å kjøre appen på ios må GOOGLE_CLIENT_ID inn i ios-konfigen.
-
-I ios/Info.plist kan man klistre inn dette:
-
-```
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>GOOGLE_CLIENT_ID_PLACEHOLDER</string>
-			</array>
-		</dict>
-	</array>
-```
-
-Man kan så kjøre:
-
-```sh
-GOOGLE_CLIENT_ID=$(grep GOOGLE_CLIENT_ID secrets | cut -d '=' -f2)
-/usr/libexec/PlistBuddy -c "Set CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_CLIENT_ID" ios/Runner/Info.plist
-```
-
-Jeg er usikker på hva CFBundleTypeRole er for noe og om den er nødvendig.
-Man kan også bare lime inn GOOGLE_CLIENT_ID istedenfor GOOGLE_CLIENT_ID_PLACEHOLDER, grunnen til at jeg gjorde det på denne måten var å kunne sjekke inn hele prosjektet, men det er mye enklere å lage nytt prosjekt enn å være nødt til å finne feil i alt det som genereres.
+(evt). Sjekke ut testprosjektet (https://github.com/lhartvik/ontests) i test-folderen

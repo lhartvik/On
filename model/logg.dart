@@ -1,3 +1,4 @@
+import 'package:onlight/model/simple_date.dart';
 import 'package:uuid/uuid.dart';
 
 class Logg {
@@ -20,4 +21,40 @@ class Logg {
   Map<String, Object?> toJsonDatabase() {
     return {'id': id, 'event': event, 'timestamp': timestamp};
   }
+
+  DateTime get dateTime {
+    return DateTime.parse(timestamp);
+  }
+
+  DateTime get localDateTime {
+    return DateTime.parse(timestamp).toLocal();
+  }
+
+  SimpleDate get dato {
+    return SimpleDate.fromDateTime(dateTime);
+  }
+
+  @override
+  String toString() {
+    return "$timestamp $event";
+  }
+
+  @override
+  operator ==(Object other) {
+    return other is Logg && other.id == id && other.event == event && other.timestamp == timestamp;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ event.hashCode ^ timestamp.hashCode;
+  }
+}
+
+enum LoggType {
+  medicineTaken("Ta medisin"),
+  on("On"),
+  off("Off");
+
+  final String name;
+  const LoggType(this.name);
 }

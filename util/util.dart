@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onlight/model/simple_date.dart';
 
 class Util {
   static String timeAgo(DateTime? dateTime) {
@@ -23,6 +24,10 @@ class Util {
       return 'Aldri';
     }
     return DateFormat('yyyy-MM-dd HH:mm').format(dateTime.toLocal());
+  }
+
+  static String formatDato(SimpleDate dato) {
+    return '${dato.day.toString().padLeft(2, '0')}.${dato.month.toString().padLeft(2, '0')}.${dato.year}';
   }
 
   static String formatTidSiden(Duration tidSiden) {
@@ -51,6 +56,14 @@ class Util {
       time.hour,
       time.minute,
     ).toUtc();
+  }
+
+  static TimeOfDay timeOfDay(DateTime dateTime) {
+    return TimeOfDay.fromDateTime(dateTime);
+  }
+
+  static String onlyTime(DateTime dateTime) {
+    return DateFormat.Hm().format(dateTime);
   }
 
   static int daysBetween(DateTime from, DateTime to) {

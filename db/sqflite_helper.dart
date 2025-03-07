@@ -1,18 +1,14 @@
 import 'dart:async';
-
-import 'package:on_app/model/logg.dart';
-import 'package:on_app/model/plan.dart';
+import 'package:onlight/model/logg.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
-
 import 'database_helper.dart';
 
 class LocalDBHelper implements DatabaseHelper {
   static const _databaseName = 'pmed_database.db';
   static const _databaseVersion = 1;
   static const _logTableName = 'pmed';
-  static const _planTableName = 'plan';
 
   LocalDBHelper._privateConstructor();
   static final LocalDBHelper instance = LocalDBHelper._privateConstructor();
@@ -40,21 +36,14 @@ class LocalDBHelper implements DatabaseHelper {
         timestamp TEXT
       )
     ''');
-    await db.execute('''
-      CREATE TABLE $_planTableName (
-        id TEXT PRIMARY KEY,
-        medicine TEXT NOT NULL,
-        time TEXT NOT NULL
-      )
-    ''');
   }
 
   @override
-  Future<Logg> insert(String event, {DateTime? tidspunkt}) async {
+  Future<Logg> insert(String event, {String? id, DateTime? tidspunkt}) async {
     Database db = await instance.database;
     tidspunkt ??= DateTime.now().toUtc();
     Map<String, dynamic> eventJson = {
-      'id': Uuid().v4(),
+      'id': id ?? Uuid().v4(),
       'event': event,
       'timestamp': tidspunkt.toUtc().toIso8601String(),
     };
@@ -72,6 +61,12 @@ class LocalDBHelper implements DatabaseHelper {
       where: 'timestamp = ?',
       whereArgs: [oldLog.timestamp],
     );
+  }
+
+  Future<String> delete(String id) async {
+    Database db = await instance.database;
+    await db.delete(_logTableName, where: 'id = ?', whereArgs: [id]);
+    return id;
   }
 
   @override
@@ -146,28 +141,5 @@ class LocalDBHelper implements DatabaseHelper {
         });
       }
     });
-  }
-
-  Future<List<Plan>> getMedicinePlan() async {
-    Database db = await instance.database;
-    var dbentries = await db.query(_planTableName);
-
-    return dbentries.isNotEmpty
-        ? dbentries.map((entry) => Plan.fromJsonDatabase(entry)).toList()
-        : [];
-  }
-
-  void insertPlan(Plan plan) async {
-    Database db = await instance.database;
-    await db.insert(_planTableName, {
-      'id': plan.id,
-      'medicine': plan.medicine,
-      'time': plan.tidString,
-    });
-  }
-
-  void removePlan(String id) async {
-    Database db = await instance.database;
-    await db.delete(_planTableName, where: 'id = ?', whereArgs: [id]);
   }
 }
