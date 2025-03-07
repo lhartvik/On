@@ -33,6 +33,21 @@ class Logg {
   SimpleDate get dato {
     return SimpleDate.fromDateTime(dateTime);
   }
+
+  @override
+  String toString() {
+    return "$timestamp $event";
+  }
+
+  @override
+  operator ==(Object other) {
+    return other is Logg && other.id == id && other.event == event && other.timestamp == timestamp;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ event.hashCode ^ timestamp.hashCode;
+  }
 }
 
 enum LoggType {

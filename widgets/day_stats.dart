@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:onlight/screens/stats_screen.dart';
+import 'package:onlight/model/med_on_off_log.dart';
+import 'package:onlight/widgets/med_on_off_log_widget.dart';
 
 class DayStats extends StatelessWidget {
   final String day;

@@ -34,7 +34,6 @@ class _OnScreenState extends State<OnScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("build!");
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainer,
       child: OrientationBuilder(
