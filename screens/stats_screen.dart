@@ -24,22 +24,12 @@ class StatsScreen extends StatelessWidget {
               return Center(child: Text('Fant ingen data'));
             } else {
               List<Logg> logs = snapshot.data!;
-              Map<String, List<Logg>> byDay = groupBy(
-                logs,
-                (log) => Util.formatDato(log.dato),
-              );
+              Map<String, List<Logg>> byDay = groupBy(logs, (log) => Util.formatDato(log.dato));
               List<DayLog> dayLogs = [];
               for (var key in byDay.keys) {
                 dayLogs.add(DayLog(key, byDay[key]!));
               }
-              return ListView(
-                children: [
-                  for (DayLog day in dayLogs.where(
-                    (day) => day.medOnOffLogs.isNotEmpty,
-                  ))
-                    DayStats(day.day, day.medOnOffLogs),
-                ],
-              );
+              return ListView(children: [for (DayLog day in dayLogs) DayStats(day.day, day.medOnOffLogs)]);
             }
           },
         ),

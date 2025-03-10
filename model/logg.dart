@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:onlight/model/simple_date.dart';
 import 'package:uuid/uuid.dart';
 
@@ -53,8 +54,13 @@ class Logg {
 enum LoggType {
   medicineTaken("Ta medisin"),
   on("On"),
-  off("Off");
+  off("Off"),
+  error("Error");
 
   final String name;
   const LoggType(this.name);
+
+  static LoggType of(String? s) {
+    return LoggType.values.firstWhereOrNull((element) => element.name == s) ?? LoggType.error;
+  }
 }

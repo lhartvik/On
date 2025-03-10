@@ -1,66 +1,33 @@
-import 'package:onlight/util/util.dart';
+import 'package:collection/collection.dart';
+import 'package:onlight/model/event_duration.dart';
+import 'package:onlight/model/logg.dart';
 
 class MedOnOffLog {
-  DateTime tmed;
-  DateTime? tplus;
-  DateTime? tminus;
-  DateTime? tprevmed;
-  DateTime? tnextmed;
+  final List<Logg> logs;
+  final DateTime tmed;
+  final DateTime? tprevmed;
+  final DateTime? tnextmed;
+  final LoggType? lastEventBeforeMed;
 
-  MedOnOffLog(this.tmed, this.tplus, this.tminus, {this.tprevmed, this.tnextmed});
+  MedOnOffLog(this.tmed, this.logs, {this.tprevmed, this.tnextmed, this.lastEventBeforeMed});
 
-  Duration get timeUntilOn {
-    return tplus?.difference(tmed) ?? Duration.zero;
-  }
+  DateTime get maxTime =>
+      tnextmed ??
+      ((tmed.add(Duration(hours: 8)).isAfter(DateTime.now())) ? DateTime.now() : tmed.add(Duration(hours: 8)));
 
-  Duration get timeUntilOff {
-    return tminus?.difference(tmed) ?? Duration.zero;
-  }
+  List<EventDuration> get onOffDurations {
+    List<EventDuration> durations = [];
 
-  Duration? get timeBetweenOnAndNow {
-    var t = tplus == null ? Duration.zero : DateTime.now().difference(tplus!);
-
-    if (t.isNegative) {
-      return Duration.zero;
+    LoggType currentEvent = lastEventBeforeMed ?? LoggType.medicineTaken;
+    DateTime currentEventTime = tmed;
+    for (Logg log in logs.sorted((a, b) => a.dateTime.compareTo(b.dateTime))) {
+      if (LoggType.of(log.event) != currentEvent) {
+        durations.add(EventDuration(event: currentEvent, duration: log.dateTime.difference(currentEventTime)));
+        currentEventTime = log.dateTime;
+        currentEvent = LoggType.of(log.event);
+      }
     }
-    if (t.inHours > 8) {
-      return null;
-    }
-    return t;
-  }
-
-  Duration get timeOn {
-    return (tplus == null)
-        ? Duration.zero
-        : tminus?.difference(tplus!) ?? tnextmed?.difference(tplus!) ?? timeBetweenOnAndNow ?? Duration(hours: 8);
-  }
-
-  Duration get timeUntilNextMed {
-    return tnextmed?.difference(tmed) ?? Duration.zero;
-  }
-
-  @override
-  String toString() {
-    String tmedString = ((tprevmed != null) ? "prev: ${Util.onlyTime(tprevmed!)}" : "( no prev )");
-    tmedString = "$tmedString|med: ${Util.onlyTime(tmed)}";
-    tmedString = "$tmedString|${(tplus != null) ? "on: ${Util.onlyTime(tplus!)}" : "(no tplus)"}";
-    tmedString = "$tmedString|${(tminus != null) ? "off: ${Util.onlyTime(tminus!)}" : "(no tminus)"}";
-    tmedString = "$tmedString|${(tnextmed != null) ? "next: ${Util.onlyTime(tnextmed!)}" : "(no nextmed)"}";
-    return tmedString;
-  }
-
-  @override
-  operator ==(Object other) {
-    return other is MedOnOffLog &&
-        other.tmed == tmed &&
-        other.tplus == tplus &&
-        other.tminus == tminus &&
-        other.tprevmed == tprevmed &&
-        other.tnextmed == tnextmed;
-  }
-
-  @override
-  int get hashCode {
-    return tmed.hashCode ^ tplus.hashCode ^ tminus.hashCode ^ tprevmed.hashCode ^ tnextmed.hashCode;
+    durations.add(EventDuration(event: currentEvent, duration: maxTime.difference(currentEventTime)));
+    return durations;
   }
 }

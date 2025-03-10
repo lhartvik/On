@@ -1,47 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:onlight/model/event_duration.dart';
+import 'package:onlight/model/logg.dart';
 import 'package:onlight/model/med_on_off_log.dart';
 import 'package:onlight/util/util.dart';
 
 class MedOnOffLogWidget extends StatelessWidget {
-  final MedOnOffLog log;
+  final MedOnOffLog medOnOffLog;
 
-  const MedOnOffLogWidget({super.key, required this.log});
+  const MedOnOffLogWidget({super.key, required this.medOnOffLog});
 
   @override
   Widget build(BuildContext context) {
-    int rest = log.timeUntilOff.inMinutes - log.timeOn.inMinutes;
+    List<EventDuration> onOffDurations = medOnOffLog.onOffDurations;
     return SizedBox(
       width: 350,
-      height: 50,
+      height: 70,
       child: Column(
         children: [
-          Text(Util.onlyTime(log.tmed)),
+          Align(alignment: Alignment.centerLeft, child: Text(Util.onlyTime(medOnOffLog.tmed.toLocal()))),
           Row(
             children: [
-              Expanded(
-                flex: log.timeUntilOn.inMinutes,
-                child: Container(height: 10, color: Colors.black),
-              ),
-              Expanded(
-                flex: log.timeOn.inMinutes,
-                child: Container(height: 10, color: Colors.green),
-              ),
-              Expanded(
-                flex: log.timeUntilOff.inMinutes - log.timeOn.inMinutes,
-                child: Container(height: 10, color: Colors.red),
-              ),
+              for (EventDuration event in onOffDurations)
+                Expanded(flex: event.duration.inMinutes + 1, child: Container(height: 10, color: colorOf(event.event))),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${log.timeUntilOn.inMinutes}m'),
-              Text('${log.timeOn.inMinutes}m'),
-              if (rest > 0) Text('${rest}m'),
+              for (EventDuration event in onOffDurations) Text('${short(event.event)} ${event.duration.inMinutes}m'),
+              if (medOnOffLog.tnextmed != null)
+                Align(alignment: Alignment.centerRight, child: Text(Util.onlyTime(medOnOffLog.tnextmed!.toLocal()))),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+String short(LoggType event) {
+  switch (event) {
+    case LoggType.medicineTaken:
+      return 'Opptak';
+    case LoggType.on:
+      return 'On';
+    case LoggType.off:
+      return 'Off';
+    default:
+      return '?';
+  }
+}
+
+Color colorOf(LoggType event) {
+  switch (event) {
+    case LoggType.medicineTaken:
+      return Colors.black;
+    case LoggType.on:
+      return Colors.green;
+    case LoggType.off:
+      return Colors.red;
+    default:
+      return Colors.grey;
   }
 }

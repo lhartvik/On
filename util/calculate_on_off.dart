@@ -7,53 +7,38 @@ List<Logg> getSortedMedList(List<Logg> allLogs) {
     ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
 }
 
-List<MedOnOffLog> calculateOnOff(List<Logg> logs) {
+List<MedOnOffLog> calculateOnOff(List<Logg> logsUnsorted) {
   List<MedOnOffLog> result = [];
+
+  List<Logg> logs = logsUnsorted.sorted((a, b) => a.dateTime.compareTo(b.dateTime));
 
   List<Logg> meds = getSortedMedList(logs);
 
   for (Logg med in meds) {
     DateTime tmed = med.dateTime;
-    DateTime? tplus = med.dateTime;
-    DateTime? tminus;
     Logg? forrigeMed = meds.lastWhereOrNull((log) => log.dateTime.isBefore(med.dateTime));
     Logg? nextMed = meds.firstWhereOrNull((log) => log.dateTime.isAfter(med.dateTime));
 
-    bool onBeforeMed = logs.any(
-      (onEvent) =>
-          onEvent.event == LoggType.on.name &&
-          onEvent.dateTime.isBefore(med.dateTime) &&
-          !(logs.any(
-            (offBetweenOnAndMed) =>
-                offBetweenOnAndMed.event == LoggType.off.name &&
-                offBetweenOnAndMed.dateTime.isAfter(onEvent.dateTime) &&
-                offBetweenOnAndMed.dateTime.isBefore(med.dateTime),
-          )),
-    );
+    String? lastEventBeforeMed =
+        logs
+            .lastWhereOrNull(
+              (onOrOff) =>
+                  onOrOff.dateTime.isBefore(med.dateTime) &&
+                  [LoggType.on.name, LoggType.off.name].contains(onOrOff.event),
+            )
+            ?.event;
 
-    tplus =
-        onBeforeMed
-            ? med.dateTime
-            : logs
-                .firstWhereOrNull(
-                  (log) =>
-                      log.event == LoggType.on.name &&
-                      log.dateTime.isAfter(med.dateTime) &&
-                      ((nextMed == null) || log.dateTime.isBefore(nextMed.dateTime)),
-                )
-                ?.dateTime;
-    if (tplus != null) {
-      tminus =
-          logs
-              .firstWhereOrNull(
-                (log) =>
-                    log.event == LoggType.off.name &&
-                    log.dateTime.isAfter(tplus!) &&
-                    (nextMed == null || log.dateTime.isBefore(nextMed.dateTime)),
-              )
-              ?.dateTime;
-      result.add(MedOnOffLog(tmed, tplus, tminus, tprevmed: forrigeMed?.dateTime, tnextmed: nextMed?.dateTime));
-    }
+    result.add(
+      MedOnOffLog(
+        tmed,
+        logs
+            .where((log) => log.dateTime.isAfter(tmed) && (nextMed == null || log.dateTime.isBefore(nextMed.dateTime)))
+            .toList(),
+        tprevmed: forrigeMed?.dateTime,
+        tnextmed: nextMed?.dateTime,
+        lastEventBeforeMed: (lastEventBeforeMed != null) ? LoggType.of(lastEventBeforeMed) : null,
+      ),
+    );
   }
 
   return result;

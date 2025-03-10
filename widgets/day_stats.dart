@@ -18,12 +18,7 @@ class DayStats extends StatelessWidget {
       ),
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Text(day),
-          for (var log in logs) MedOnOffLogWidget(log: log),
-        ],
-      ),
+      child: Column(children: [Text(day), for (var log in logs) MedOnOffLogWidget(medOnOffLog: log)]),
     );
   }
 }
