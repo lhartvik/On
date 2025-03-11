@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:onlight/model/event_duration.dart';
 import 'package:onlight/model/logg.dart';
+import 'package:onlight/model/logg_type.dart';
 
 class MedOnOffLog {
   final List<Logg> logs;

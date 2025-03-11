@@ -1,4 +1,4 @@
-import 'package:onlight/model/logg.dart';
+import 'package:onlight/model/logg_type.dart';
 
 class EventDuration {
   final LoggType event;

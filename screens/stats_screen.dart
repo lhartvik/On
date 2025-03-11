@@ -4,7 +4,7 @@ import 'package:onlight/db/sqflite_helper.dart';
 import 'package:onlight/model/day_log.dart';
 import 'package:onlight/model/logg.dart';
 import 'package:onlight/util/util.dart';
-import 'package:onlight/widgets/day_stats.dart';
+import 'package:onlight/widgets/day_stats_widget.dart';
 
 class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
@@ -29,7 +29,7 @@ class StatsScreen extends StatelessWidget {
               for (var key in byDay.keys) {
                 dayLogs.add(DayLog(key, byDay[key]!));
               }
-              return ListView(children: [for (DayLog day in dayLogs) DayStats(day.day, day.medOnOffLogs)]);
+              return ListView(children: [for (DayLog day in dayLogs) DayStatsWidget(day.day, day.medOnOffLogs)]);
             }
           },
         ),

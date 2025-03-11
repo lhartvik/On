@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:onlight/model/logg.dart';
+import 'package:onlight/model/logg_type.dart';
 import 'package:onlight/model/med_on_off_log.dart';
 
 List<Logg> getSortedMedList(List<Logg> allLogs) {
