@@ -24,7 +24,7 @@ class StatsScreen extends StatelessWidget {
               return Center(child: Text('Fant ingen data'));
             } else {
               List<Logg> logs = snapshot.data!;
-              Map<String, List<Logg>> byDay = groupBy(logs, (log) => Util.formatDato(log.dato));
+              Map<String, List<Logg>> byDay = groupBy(logs, (log) => Util.formatDato(log.lokalDato));
               List<DayLog> dayLogs = [];
               for (var key in byDay.keys) {
                 dayLogs.add(DayLog(key, byDay[key]!));

@@ -21,11 +21,7 @@ class LocalDBHelper implements DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(
-      path,
-      version: _databaseVersion,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -55,12 +51,7 @@ class LocalDBHelper implements DatabaseHelper {
 
   Future<void> update(Logg newLog, Logg oldLog) async {
     Database db = await instance.database;
-    await db.update(
-      _logTableName,
-      newLog.toJsonDatabase(),
-      where: 'timestamp = ?',
-      whereArgs: [oldLog.timestamp],
-    );
+    await db.update(_logTableName, newLog.toJsonDatabase(), where: 'timestamp = ?', whereArgs: [oldLog.timestamp]);
   }
 
   Future<String> delete(String id) async {
@@ -73,9 +64,7 @@ class LocalDBHelper implements DatabaseHelper {
   Future<List<Logg>> readAllLogs() async {
     Database db = await instance.database;
     var dbentries = await db.query(_logTableName, orderBy: 'timestamp DESC');
-    return dbentries.isNotEmpty
-        ? dbentries.map((entry) => Logg.fromJsonDatabase(entry)).toList()
-        : [];
+    return dbentries.isNotEmpty ? dbentries.map((entry) => Logg.fromJsonDatabase(entry)).toList() : [];
   }
 
   @override
@@ -96,24 +85,15 @@ class LocalDBHelper implements DatabaseHelper {
       limit: 1,
     );
 
-    return queryResult.isNotEmpty
-        ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc()
-        : null;
+    return queryResult.isNotEmpty ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc() : null;
   }
 
   @override
   Future<DateTime?> lastLog() async {
     Database db = await instance.database;
-    var queryResult = await db.query(
-      _logTableName,
-      columns: ['timestamp'],
-      orderBy: 'timestamp DESC',
-      limit: 1,
-    );
+    var queryResult = await db.query(_logTableName, columns: ['timestamp'], orderBy: 'timestamp DESC', limit: 1);
 
-    return queryResult.isNotEmpty
-        ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc()
-        : null;
+    return queryResult.isNotEmpty ? DateTime.tryParse(queryResult.first['timestamp'] as String)?.toUtc() : null;
   }
 
   @override
@@ -134,12 +114,15 @@ class LocalDBHelper implements DatabaseHelper {
     var database = await instance.database;
     await database.transaction((txn) async {
       for (var logg in value) {
-        await txn.insert(_logTableName, {
-          'id': logg.id,
-          'event': logg.event,
-          'timestamp': logg.timestamp,
-        });
+        await txn.insert(_logTableName, {'id': logg.id, 'event': logg.event, 'timestamp': logg.timestamp});
       }
+    });
+  }
+
+  Future<void> deleteAllLogs() async {
+    var database = await instance.database;
+    await database.transaction((txn) async {
+      await txn.delete(_logTableName);
     });
   }
 }

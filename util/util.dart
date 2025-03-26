@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:onlight/model/med_on_off_log.dart';
 import 'package:onlight/model/simple_date.dart';
 
 class Util {
@@ -49,13 +50,7 @@ class Util {
   // should be converted to utc for all other purposes than displaying
   static today(TimeOfDay time) {
     DateTime now = DateTime.now().toLocal();
-    return DateTime(
-      now.year,
-      now.month,
-      now.day,
-      time.hour,
-      time.minute,
-    ).toUtc();
+    return DateTime(now.year, now.month, now.day, time.hour, time.minute).toUtc();
   }
 
   static TimeOfDay timeOfDay(DateTime dateTime) {
@@ -88,12 +83,22 @@ class Util {
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
     if (tid.year == now.year && tid.month == now.month && tid.day == now.day) {
       return '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}';
-    } else if (tid.year == yesterday.year &&
-        tid.month == yesterday.month &&
-        tid.day == yesterday.day) {
+    } else if (tid.year == yesterday.year && tid.month == yesterday.month && tid.day == yesterday.day) {
       return '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')} i går';
     } else {
       return '${tid.day.toString().padLeft(2, '0')}.${tid.month.toString().padLeft(2, '0')}.${tid.year}';
     }
+  }
+
+  static MedOnOffLog earliest(List<MedOnOffLog> logs) {
+    return logs.reduce((a, b) => a.tmed.isBefore(b.tmed) ? a : b);
+  }
+
+  static DateTime startOfDay(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+  }
+
+  static DateTime endOfDay(DateTime dateTime) {
+    return DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999);
   }
 }

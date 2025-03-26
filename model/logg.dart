@@ -34,6 +34,10 @@ class Logg {
     return SimpleDate.fromDateTime(dateTime);
   }
 
+  SimpleDate get lokalDato {
+    return SimpleDate.fromDateTime(localDateTime);
+  }
+
   @override
   String toString() {
     return "$timestamp $event";

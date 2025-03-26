@@ -25,4 +25,28 @@ I skrivende tid er det disse:
 ````
 Men versjonene vil endre seg etter at jeg har skrevet dette og jeg legger helt sikkert til flere uten å oppdatere README
 
+# Ny versjon IPhone
+
+For å slippe å huke av hver gang for at det ikke brukes noen proprietære krypteringsalgoritmer: 
+````
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <false/>
+````
+inn i ios/Runner/Info.plist
+
+1. Oppdatere versjonsnummer i pubspec.yaml.
+2. gå til flutter-bygg-mappen, ett nivå over lib og kjør flutter build ios
+3. Åpne ios-folderen i xcode
+4. Test at XCode også kan kjøre appen i simulator
+5. Product - Archive
+6. Hvis det lykkes skal det dukke opp et vindu med Archives og versjoner. Velg ønsker versjon og klikk Distribute
+7. https://appstoreconnect.apple.com/login
+
+# Ny versjon Android
+
+1. Oppdatere versjonsnummer i pubspec.yaml.
+2. flutter build android
+3. https://play.google.com/console
+
+# Test
 (evt). Sjekke ut testprosjektet (https://github.com/lhartvik/ontests) i test-folderen

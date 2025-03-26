@@ -104,6 +104,15 @@ class HorizontalAligned extends StatelessWidget {
                       Loggeknapp(tittel: 'Ta medisin'),
                       Text(stats.lastMedicineTakenString),
                       Text(stats.timeSinceLastMedicineTakenString),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     readCsvFile().then((value) {
+                      //       LocalDBHelper.instance.insertAllLogs(value);
+                      //     });
+                      //   },
+                      //   child: Text("importer"),
+                      // ),
+                      // TextButton(onPressed: () => LocalDBHelper.instance.deleteAllLogs(), child: Text("Slett alt")),
                     ],
                   ),
                 ),
@@ -113,11 +122,7 @@ class HorizontalAligned extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 20,
-                    children: [
-                      Loggeknapp(tittel: 'On'),
-                      Loggeknapp(tittel: 'Off'),
-                      Text(stats.timeSinceLastLogString),
-                    ],
+                    children: [Loggeknapp(tittel: 'On'), Loggeknapp(tittel: 'Off'), Text(stats.timeSinceLastLogString)],
                   ),
                 ),
               ],
