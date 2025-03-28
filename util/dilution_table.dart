@@ -1,7 +1,7 @@
 class DilutionTable {
-  // Assuming a half life of 90 minutes for Levodopa: C = 0.5 ^ (t / 90) 
+  // Assuming a half life of 90 minutes for Levodopa: C = 0.5 ^ (t / 90)
   // (time in minutes) and approximately zero after 10 hours
-  Map<int, double> cByT = {
+  static Map<int, double> cByT = {
     0: 1,
     15: 0.8908987181,
     30: 0.793700526,
@@ -45,15 +45,13 @@ class DilutionTable {
     600: 0.009843133202,
   };
 
-  double cAfter(Duration time) {
+  static double cAfter(Duration time) {
     return cAfterMinutes(time.inMinutes);
   }
 
-  double cAfterMinutes(int t) {
+  static double cAfterMinutes(int t) {
     if (t < 0 || t > 615) return 0.0;
-    int closestKey = cByT.keys
-        .where((key) => key <= t)
-        .fold(0, (prev, curr) => curr > prev ? curr : prev);
+    int closestKey = cByT.keys.where((key) => key <= t).fold(0, (prev, curr) => curr > prev ? curr : prev);
     return cByT[closestKey]!;
   }
 }

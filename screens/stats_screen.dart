@@ -26,10 +26,10 @@ class StatsScreen extends StatelessWidget {
               List<Logg> logs = snapshot.data!;
               Map<String, List<Logg>> byDay = groupBy(logs, (log) => Util.formatDato(log.lokalDato));
               List<DayLog> dayLogs = [];
-              for (var key in byDay.keys) {
-                dayLogs.add(DayLog(key, byDay[key]!));
+              for (var hverDato in byDay.keys) {
+                dayLogs.add(DayLog(hverDato, byDay[hverDato]!));
               }
-              return ListView(children: [for (DayLog day in dayLogs) DayStatsWidget(day.day, day.medOnOffLogs)]);
+              return ListView(children: [for (DayLog day in dayLogs) DayStatsWidget(day)]);
             }
           },
         ),
