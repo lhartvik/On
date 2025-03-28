@@ -36,4 +36,24 @@ class MedOnOffLog {
     durations.add(EventDuration(event: currentEvent, duration: maxTime.difference(currentEventTime)));
     return durations;
   }
+
+  Duration get duration => maxTime.difference(tmed);
+
+  Duration? get timeUntilOn {
+    return logs
+        .where((event) => LoggType.of(event.event) == LoggType.on)
+        .map((event) => event.dateTime)
+        .firstOrNull
+        ?.difference(tmed);
+  }
+
+  Duration? get timeUntilOff {
+    var on = timeUntilOn;
+    if (on == null) return null;
+    return logs
+        .where((event) => event.dateTime.isAfter(tmed.add(on)) && LoggType.of(event.event) == LoggType.off)
+        .map((event) => event.dateTime)
+        .firstOrNull
+        ?.difference(tmed);
+  }
 }
