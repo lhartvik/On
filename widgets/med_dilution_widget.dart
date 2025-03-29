@@ -18,17 +18,17 @@ class MedDilutionWidget extends StatelessWidget {
     double fullWidth = MediaQuery.of(context).size.width - 20;
     double fractionUptake = minutesUntilOn / longestDuration.inMinutes;
     double sizeOfUptake = fullWidth * fractionUptake;
+    int resolution = 25;
 
     return Row(
       children: [
-        for (int i = 1; i < 10; i++)
-          SizedBox(width: sizeOfUptake / 10, height: height / 10 * i, child: Container(color: Colors.blue[100]!)),
-        for (int i = 1; i <= 200; i++)
+        SizedBox(width: sizeOfUptake, height: height),
+        for (int i = 1; i <= resolution; i++)
           Expanded(
-            flex: (longestDuration.inMinutes / 200).round(),
+            flex: (longestDuration.inMinutes / resolution).round(),
             child: Container(
-              height: height * DilutionTable.cAfterMinutes((i * longestDuration.inMinutes / height).round()),
-              color: Colors.blue[100]!,
+              height: height * DilutionTable.cAfterMinutes((i * longestDuration.inMinutes / resolution).round()),
+              color: Theme.of(context).colorScheme.primaryFixedDim,
             ),
           ),
       ],

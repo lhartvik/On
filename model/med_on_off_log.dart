@@ -7,11 +7,10 @@ import 'package:onlight/util/util.dart';
 class MedOnOffLog {
   final List<Logg> logs;
   final DateTime tmed;
-  final DateTime? tprevmed;
   final DateTime? tnextmed;
   final LoggType? lastEventBeforeMed;
 
-  MedOnOffLog(this.tmed, this.logs, {this.tprevmed, this.tnextmed, this.lastEventBeforeMed});
+  MedOnOffLog(this.tmed, this.logs, {this.tnextmed, this.lastEventBeforeMed});
 
   DateTime get maxTime =>
       [
