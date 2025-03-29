@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/db/local_db_helper.dart';
 import 'package:onlight/util/util.dart';
 
 class Statistics extends ChangeNotifier {

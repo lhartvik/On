@@ -6,37 +6,43 @@ import 'package:onlight/util/util.dart';
 
 class MedOnOffLogWidget extends StatelessWidget {
   final MedOnOffLog medOnOffLog;
+  final Duration longestDuration;
 
-  const MedOnOffLogWidget({super.key, required this.medOnOffLog});
+  const MedOnOffLogWidget({super.key, required this.medOnOffLog, required this.longestDuration});
 
   @override
   Widget build(BuildContext context) {
     List<EventDuration> onOffDurations = medOnOffLog.onOffDurations;
+    Size size = MediaQuery.of(context).size;
+
     return SizedBox(
-      width: 350,
-      height: 70,
+      width: size.width - 20,
+      height: 30,
       child: Column(
         children: [
-          Align(alignment: Alignment.centerLeft, child: Text(Util.onlyTime(medOnOffLog.tmed.toLocal()))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(alignment: Alignment.centerLeft, child: Text(Util.onlyTime(medOnOffLog.tmed.toLocal()))),
+              Text(Util.durationString(medOnOffLog.duration)),
+            ],
+          ),
           Row(
             children: [
               for (EventDuration event in onOffDurations)
                 Expanded(
-                  flex: event.duration.inMinutes + 1,
+                  flex: percentageToTakeUp(event.duration, longestDuration),
                   child: Container(height: 10, color: LoggType.colorOf(event.event)),
                 ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              for (EventDuration event in onOffDurations)
-                Text('${LoggType.short(event.event)} ${event.duration.inMinutes}m'),
-              if (medOnOffLog.tnextmed != null) Text(Util.onlyTime(medOnOffLog.tnextmed!.toLocal())),
+              Expanded(flex: 100 - percentageToTakeUp(medOnOffLog.duration, longestDuration), child: SizedBox()),
             ],
           ),
         ],
       ),
     );
+  }
+
+  int percentageToTakeUp(Duration event, Duration longest) {
+    return ((event.inMinutes / longest.inMinutes) * 100).round();
   }
 }

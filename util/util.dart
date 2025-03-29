@@ -9,8 +9,7 @@ class Util {
       return 'Ikke registrert';
     }
     var tid = TimeOfDay.fromDateTime(dateTime.toLocal());
-    String formattedTime =
-        '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}';
+    String formattedTime = '${tid.hour.toString().padLeft(2, '0')}:${tid.minute.toString().padLeft(2, '0')}';
 
     if (dateTime.toLocal().day == DateTime.now().toLocal().day) {
       return 'Sist i dag $formattedTime';
@@ -100,5 +99,13 @@ class Util {
 
   static DateTime endOfDay(DateTime dateTime) {
     return DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59, 999);
+  }
+
+  static String durationString(Duration duration) {
+    if (duration.inHours > 0) {
+      return '${duration.inHours}t ${duration.inMinutes % 60}m';
+    } else {
+      return '${duration.inMinutes}m';
+    }
   }
 }
