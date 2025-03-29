@@ -17,7 +17,6 @@ List<MedOnOffLog> calculateOnOff(List<Logg> logsUnsorted) {
 
   for (Logg med in meds) {
     DateTime tmed = med.dateTime;
-    Logg? forrigeMed = meds.lastWhereOrNull((log) => log.dateTime.isBefore(med.dateTime));
     Logg? nextMed = meds.firstWhereOrNull((log) => log.dateTime.isAfter(med.dateTime));
 
     String? lastEventBeforeMed =
