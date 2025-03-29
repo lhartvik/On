@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/db/local_db_helper.dart';
 import 'package:onlight/model/logg.dart';
 import 'package:onlight/util/util.dart';
 
@@ -30,6 +30,31 @@ class _ViewScreenState extends State<ViewScreen> {
     });
   }
 
+  void onDismissed(Logg logg) {
+    LocalDBHelper.instance.delete(logg.id).then((id) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp).toLocal())} removed',
+            ),
+            action: SnackBarAction(
+              label: 'Angre',
+              onPressed: () {
+                LocalDBHelper.instance.insert(
+                  logg.event,
+                  id: logg.id,
+                  tidspunkt: DateTime.parse(logg.timestamp).toUtc(),
+                );
+                setState(() {});
+              },
+            ),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,28 +79,7 @@ class _ViewScreenState extends State<ViewScreen> {
                   child: Dismissible(
                     key: ValueKey(logg.id),
                     onDismissed: (direction) {
-                      LocalDBHelper.instance.delete(logg.id).then((id) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp))} removed',
-                              ),
-                              action: SnackBarAction(
-                                label: 'Angre',
-                                onPressed: () {
-                                  LocalDBHelper.instance.insert(
-                                    logg.event,
-                                    id: logg.id,
-                                    tidspunkt: DateTime.parse(logg.timestamp),
-                                  );
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                      });
+                      onDismissed(logg);
                     },
                     child: Card(
                       child: ListTile(
