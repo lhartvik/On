@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:onlight/db/sqflite_helper.dart';
+import 'package:onlight/db/local_db_helper.dart';
 import 'package:onlight/model/day_log.dart';
 import 'package:onlight/model/logg.dart';
 import 'package:onlight/util/util.dart';

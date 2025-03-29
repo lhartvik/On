@@ -35,7 +35,6 @@ List<MedOnOffLog> calculateOnOff(List<Logg> logsUnsorted) {
         logs
             .where((log) => log.dateTime.isAfter(tmed) && (nextMed == null || log.dateTime.isBefore(nextMed.dateTime)))
             .toList(),
-        tprevmed: forrigeMed?.dateTime,
         tnextmed: nextMed?.dateTime,
         lastEventBeforeMed: (lastEventBeforeMed != null) ? LoggType.of(lastEventBeforeMed) : null,
       ),
