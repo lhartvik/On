@@ -1,6 +1,6 @@
 # on_app
 
-On er laget for å tracke On og Off-perioder når man er nybegynner på å ha Parkinson og vil få kontroll på når man kan ta medisin for å unngå symptomer.
+On is an app for Android and Ios mobile devices for helping people with Parkinsons track periods when the medicine takes effect(you are On) and stops working(you are Off). 
 
 ## Prerequisites
 [Install VS Code](https://code.visualstudio.com/download)
