@@ -47,9 +47,15 @@ class Util {
   // TimeOfDay will always be local, so DateTime.now() should also be local,
   // to match the local time of day. The resulting DateTime will be local and
   // should be converted to utc for all other purposes than displaying
-  static today(TimeOfDay time) {
+  static DateTime today(TimeOfDay time) {
     DateTime now = DateTime.now().toLocal();
     return DateTime(now.year, now.month, now.day, time.hour, time.minute).toUtc();
+  }
+
+  static todayOrYesterday(TimeOfDay pickedTime) {
+    DateTime nowOrYesterday = DateTime.now().toLocal();
+    if (timeOfDay(nowOrYesterday).isBefore(pickedTime)) nowOrYesterday = nowOrYesterday.subtract(Duration(days: 1));
+    return DateTime(nowOrYesterday.year, nowOrYesterday.month, nowOrYesterday.day, pickedTime.hour, pickedTime.minute).toUtc();
   }
 
   static TimeOfDay timeOfDay(DateTime dateTime) {
