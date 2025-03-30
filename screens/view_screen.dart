@@ -29,7 +29,7 @@ class _ViewScreenState extends State<ViewScreen> {
       event: logg.event,
       timestamp: pickedDateTime.toIso8601String(),
     );
-    LocalDBHelper.instance.update(newLogg, logg).then((log) {
+    LocalDBHelper.instance.update(newLogg).then((log) {
       setState(() {});
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +63,7 @@ class _ViewScreenState extends State<ViewScreen> {
       event: logg.event,
       timestamp: pickedDateTime.toIso8601String(),
     );
-    LocalDBHelper.instance.update(newLoggWithPickedDate, logg).then((log) {
+    LocalDBHelper.instance.update(newLoggWithPickedDate).then((log) {
       setState(() {});
     });
   }
