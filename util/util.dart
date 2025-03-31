@@ -55,7 +55,13 @@ class Util {
   static DateTime todayOrYesterday(TimeOfDay pickedTime) {
     DateTime nowOrYesterday = DateTime.now().toLocal();
     if (timeOfDay(nowOrYesterday).isBefore(pickedTime)) nowOrYesterday = nowOrYesterday.subtract(Duration(days: 1));
-    return DateTime(nowOrYesterday.year, nowOrYesterday.month, nowOrYesterday.day, pickedTime.hour, pickedTime.minute).toUtc();
+    return DateTime(
+      nowOrYesterday.year,
+      nowOrYesterday.month,
+      nowOrYesterday.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    ).toUtc();
   }
 
   static TimeOfDay timeOfDay(DateTime dateTime) {
