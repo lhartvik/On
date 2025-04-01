@@ -18,14 +18,52 @@ class _ViewScreenState extends State<ViewScreen> {
     );
 
     if (pickedTime == null) return;
-    var pickedDateTime = Util.today(pickedTime);
+    var pickedDateTime = DateTime(logg.dateTime.year, logg.dateTime.month,
+            logg.dateTime.day, pickedTime.hour, pickedTime.minute)
+        .toUtc();
+
+    if (pickedDateTime.isAfter(DateTime.now())) pickedDateTime = pickedDateTime.subtract(Duration(days: 1));
 
     Logg newLogg = Logg(
       id: logg.id,
       event: logg.event,
       timestamp: pickedDateTime.toIso8601String(),
     );
-    LocalDBHelper.instance.update(newLogg, logg).then((log) {
+    LocalDBHelper.instance.update(newLogg).then((log) {
+      setState(() {});
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Registrert ${newLogg.event}, ${Util.format(DateTime.parse(newLogg.timestamp).toLocal())}'),
+            action: SnackBarAction(label: 'Oppgi dato', onPressed: () => onSelectDate(newLogg)),
+            ),
+        );
+      }
+    });
+  }
+
+  void onSelectDate(Logg logg) async {
+    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(logg.localDateTime);
+    DateTime now = DateTime.now();
+    DateTime lastDateChoice = timeOfDay.isAfter(TimeOfDay.fromDateTime(now)) ? now.subtract(Duration(days: 1)) : now;
+    final pickedDate = await showDatePicker(
+      context: context,
+      firstDate: logg.dateTime.subtract(Duration(days: 3)),
+      initialDate: logg.dateTime,
+      lastDate: lastDateChoice
+    );
+
+    if (pickedDate == null) return;
+    var pickedDateTime = DateTime(pickedDate.year, pickedDate.month,
+            pickedDate.day, timeOfDay.hour, timeOfDay.minute)
+        .toUtc();
+
+    Logg newLoggWithPickedDate = Logg(
+      id: logg.id,
+      event: logg.event,
+      timestamp: pickedDateTime.toIso8601String(),
+    );
+    LocalDBHelper.instance.update(newLoggWithPickedDate).then((log) {
       setState(() {});
     });
   }
@@ -36,7 +74,7 @@ class _ViewScreenState extends State<ViewScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp).toLocal())} removed',
+              '${logg.event}, ${Util.format(DateTime.parse(logg.timestamp).toLocal())} slettet',
             ),
             action: SnackBarAction(
               label: 'Angre',

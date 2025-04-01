@@ -43,6 +43,9 @@ class MedOnOffLogWidget extends StatelessWidget {
   }
 
   int percentageToTakeUp(Duration event, Duration longest) {
+    if (longest.inMinutes == 0) {
+      return 100;
+    }
     return ((event.inMinutes / longest.inMinutes) * 100).round();
   }
 }

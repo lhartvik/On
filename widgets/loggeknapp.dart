@@ -38,7 +38,7 @@ class _LoggeknappState extends State<Loggeknapp> {
       );
 
       if (pickedTime == null) return;
-      var pickedDateTime = Util.today(pickedTime);
+      var pickedDateTime = Util.todayOrYesterday(pickedTime);
       LocalDBHelper.instance
           .insert(widget.tittel, tidspunkt: pickedDateTime)
           .then((log) {
