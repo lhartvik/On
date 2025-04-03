@@ -39,7 +39,7 @@ class _OnScreenState extends State<OnScreen> {
       child: OrientationBuilder(
         builder: (context, orientation) {
           if (orientation == Orientation.portrait) {
-            return VerticalAligned();
+            return VerticallyAligned();
           } else {
             return HorizontalAligned();
           }
@@ -49,8 +49,8 @@ class _OnScreenState extends State<OnScreen> {
   }
 }
 
-class VerticalAligned extends StatelessWidget {
-  const VerticalAligned({super.key});
+class VerticallyAligned extends StatelessWidget {
+  const VerticallyAligned({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +71,7 @@ class VerticalAligned extends StatelessWidget {
                 Loggeknapp(tittel: 'On'),
                 Loggeknapp(tittel: 'Off'),
                 Text(stats.timeSinceLastLogString),
+                Loggeknapp(tittel: 'Dyskinesi'),
               ],
             ),
           ),
@@ -122,7 +123,12 @@ class HorizontalAligned extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 20,
-                    children: [Loggeknapp(tittel: 'On'), Loggeknapp(tittel: 'Off'), Text(stats.timeSinceLastLogString)],
+                    children: [
+                      Loggeknapp(tittel: 'On'),
+                      Loggeknapp(tittel: 'Off'),
+                      Text(stats.timeSinceLastLogString),
+                      Loggeknapp(tittel: 'Dyskinesi'),
+                    ],
                   ),
                 ),
               ],

@@ -57,7 +57,7 @@ Permissions seems to be unneccessary when directly connected to PC. Keep track o
 ````
 into ios/Runner/Info.plist
 
-1. Update version number in pubspec.yaml.
+1. Update version number in pubspec.yaml. example "1.0.4+2" -> "1.0.5+3"
 1. go to flutter-build-folder, run ```flutter build ios```
 1. Open ios-folder in xcode
 1. Test run the app in the Ios simulator
@@ -67,7 +67,7 @@ into ios/Runner/Info.plist
 
 ## Android
 
-1. Update version number in pubspec.yaml.
+1. Update version number in pubspec.yaml. Example "1.0.4+2" -> "1.0.5+3". The "Version code" behind the + is more important on Play Store
 1. ```flutter build android```
 1. Open the android folder in Android Studio.
 1. Sign and create a aab(TODO: Add more details here)
