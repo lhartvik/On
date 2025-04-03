@@ -37,13 +37,8 @@ class _OnScreenState extends State<OnScreen> {
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainer,
       child: OrientationBuilder(
-        builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return VerticallyAligned();
-          } else {
-            return HorizontalAligned();
-          }
-        },
+        builder: (context, orientation) =>
+          (orientation == Orientation.portrait) ? VerticallyAligned() : HorizontallyAligned();
       ),
     );
   }
@@ -81,8 +76,8 @@ class VerticallyAligned extends StatelessWidget {
   }
 }
 
-class HorizontalAligned extends StatelessWidget {
-  const HorizontalAligned({super.key});
+class HorizontallyAligned extends StatelessWidget {
+  const HorizontallyAligned({super.key});
 
   @override
   Widget build(BuildContext context) {
