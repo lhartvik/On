@@ -49,9 +49,9 @@ class LocalDBHelper implements DatabaseHelper {
     return Logg.fromJsonDatabase(eventJson);
   }
 
-  Future<void> update(Logg newLog, Logg oldLog) async {
+  Future<void> update(Logg newLog) async {
     Database db = await instance.database;
-    await db.update(_logTableName, newLog.toJsonDatabase(), where: 'timestamp = ?', whereArgs: [oldLog.timestamp]);
+    await db.update(_logTableName, newLog.toJsonDatabase(), where: 'id = ?', whereArgs: [newLog.id]);
   }
 
   Future<String> delete(String id) async {

@@ -47,6 +47,9 @@ class MedOnOffLogWidget extends StatelessWidget {
     if (longest.inMinutes == 0) {
       return 1000;
     }
+    if (longest.inMinutes == 0) {
+      return 100;
+    }
     return ((event.inMinutes / longest.inMinutes) * 1000).round();
   }
 }

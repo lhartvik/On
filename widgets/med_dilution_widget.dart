@@ -16,9 +16,13 @@ class MedDilutionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double fullWidth = MediaQuery.of(context).size.width - 20;
-    double fractionUptake = minutesUntilOn / longestDuration.inMinutes;
+    double fractionUptake = longestDuration.inMinutes > 1 ? minutesUntilOn / longestDuration.inMinutes : 1;
     double sizeOfUptake = fullWidth * fractionUptake;
     int resolution = 25;
+
+    if (longestDuration.inMinutes == 0) {
+      return const SizedBox();
+    }
 
     return Row(
       children: [
