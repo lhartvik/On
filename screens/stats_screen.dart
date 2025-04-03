@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:onlight/db/local_db_helper.dart';
 import 'package:onlight/model/day_log.dart';
 import 'package:onlight/model/logg.dart';
+import 'package:onlight/model/logg_type.dart' show LoggType;
 import 'package:onlight/util/util.dart';
 import 'package:onlight/widgets/day_stats_widget.dart';
 
@@ -27,7 +28,7 @@ class StatsScreen extends StatelessWidget {
               Map<String, List<Logg>> byDay = groupBy(logs, (log) => Util.formatDato(log.lokalDato));
               List<DayLog> dayLogs = [];
               for (var hverDato in byDay.keys) {
-                dayLogs.add(DayLog(hverDato, byDay[hverDato]!));
+                if (containsMed(byDay[hverDato])) dayLogs.add(DayLog(hverDato, byDay[hverDato]!));
               }
               return ListView(children: [for (DayLog day in dayLogs) DayStatsWidget(day)]);
             }
@@ -35,5 +36,10 @@ class StatsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool containsMed(List<Logg>? list) {
+    if (list == null) return false;
+    return list.any((log) => log.event == LoggType.medicineTaken.name);
   }
 }

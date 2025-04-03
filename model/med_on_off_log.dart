@@ -22,10 +22,11 @@ class MedOnOffLog {
 
   List<EventDuration> get onOffDurations {
     List<EventDuration> durations = [];
-
     LoggType currentEvent = lastEventBeforeMed ?? LoggType.medicineTaken;
     DateTime currentEventTime = tmed;
-    for (Logg log in logs) {
+    for (Logg log in logs
+        .where((logg) => logg.dateTime.isBefore(maxTime))
+        .where((logg) => [LoggType.on.name, LoggType.off.name].contains(logg.event))) {
       if (LoggType.of(log.event) != currentEvent) {
         durations.add(EventDuration(event: currentEvent, duration: log.dateTime.difference(currentEventTime)));
         currentEventTime = log.dateTime;
@@ -33,6 +34,20 @@ class MedOnOffLog {
       }
     }
     durations.add(EventDuration(event: currentEvent, duration: maxTime.difference(currentEventTime)));
+    return durations;
+  }
+
+  List<EventDuration> get dyskinesiaDurations {
+    List<EventDuration> durations = [];
+    DateTime currentEventTime = tmed;
+    for (Logg log in logs
+        .where((logg) => logg.dateTime.isBefore(maxTime))
+        .where((log) => log.event == LoggType.dyskinesia.name)) {
+      durations.add(EventDuration(event: LoggType.none, duration: log.dateTime.difference(currentEventTime)));
+      durations.add(EventDuration(event: LoggType.dyskinesia, duration: Duration.zero));
+      currentEventTime = log.dateTime;
+    }
+    durations.add(EventDuration(event: LoggType.none, duration: maxTime.difference(currentEventTime)));
     return durations;
   }
 

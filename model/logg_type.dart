@@ -5,6 +5,8 @@ enum LoggType {
   medicineTaken("Ta medisin", "Opptak", Colors.black),
   on("On", "On", Colors.green),
   off("Off", "Off", Colors.red),
+  dyskinesia("Dyskinesi", "Dyskinesi", Colors.orange),
+  none("Ingen", "Ingen", Colors.transparent),
   error("Error", "?", Colors.grey);
 
   final String name;
@@ -25,21 +27,14 @@ enum LoggType {
         return 'On';
       case LoggType.off:
         return 'Off';
+      case LoggType.dyskinesia:
+        return 'Dyskinesi';
       default:
         return '?';
     }
   }
 
   static Color colorOf(LoggType event) {
-    switch (event) {
-      case LoggType.medicineTaken:
-        return Colors.black;
-      case LoggType.on:
-        return Colors.green;
-      case LoggType.off:
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
+    return event.color;
   }
 }
