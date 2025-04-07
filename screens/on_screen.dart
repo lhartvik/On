@@ -37,20 +37,15 @@ class _OnScreenState extends State<OnScreen> {
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainer,
       child: OrientationBuilder(
-        builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return VerticalAligned();
-          } else {
-            return HorizontalAligned();
-          }
-        },
+        builder: (context, orientation) =>
+          (orientation == Orientation.portrait) ? VerticallyAligned() : HorizontallyAligned();
       ),
     );
   }
 }
 
-class VerticalAligned extends StatelessWidget {
-  const VerticalAligned({super.key});
+class VerticallyAligned extends StatelessWidget {
+  const VerticallyAligned({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +66,7 @@ class VerticalAligned extends StatelessWidget {
                 Loggeknapp(tittel: 'On'),
                 Loggeknapp(tittel: 'Off'),
                 Text(stats.timeSinceLastLogString),
+                Loggeknapp(tittel: 'Dyskinesi'),
               ],
             ),
           ),
@@ -80,8 +76,8 @@ class VerticalAligned extends StatelessWidget {
   }
 }
 
-class HorizontalAligned extends StatelessWidget {
-  const HorizontalAligned({super.key});
+class HorizontallyAligned extends StatelessWidget {
+  const HorizontallyAligned({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +118,12 @@ class HorizontalAligned extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 20,
-                    children: [Loggeknapp(tittel: 'On'), Loggeknapp(tittel: 'Off'), Text(stats.timeSinceLastLogString)],
+                    children: [
+                      Loggeknapp(tittel: 'On'),
+                      Loggeknapp(tittel: 'Off'),
+                      Text(stats.timeSinceLastLogString),
+                      Loggeknapp(tittel: 'Dyskinesi'),
+                    ],
                   ),
                 ),
               ],
