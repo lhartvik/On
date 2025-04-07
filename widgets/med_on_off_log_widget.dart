@@ -13,6 +13,10 @@ class MedOnOffLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
+    if (longestDuration.inMinutes < 1 || medOnOffLog.duration > longestDuration) {
+      return const SizedBox(height: 30);
+    }
+
     return SizedBox(
       width: size.width - 20,
       height: 30,
@@ -25,13 +29,19 @@ class MedOnOffLogWidget extends StatelessWidget {
               Text(Util.durationString(medOnOffLog.duration)),
             ],
           ),
-          Stack(children: [medOnOffLog.onOffDurations, medOnOffLog.dyskinesiaDurations].map(_buildEventBar).toList()),
+          Stack(
+            children:
+                [
+                  medOnOffLog.onOffDurations,
+                  medOnOffLog.dyskinesiaDurations,
+                ].map((events) => _buildEventBar(events, medOnOffLog.duration)).toList(),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildEventBar(List<EventDuration> events) {
+  Widget _buildEventBar(List<EventDuration> events, Duration total) {
     return Row(
       children: [
         for (EventDuration duration in events)
@@ -39,17 +49,14 @@ class MedOnOffLogWidget extends StatelessWidget {
             flex: promilleToTakeUp(duration.duration, longestDuration) + 3,
             child: Container(height: 10, color: duration.event.color),
           ),
+        if (total < longestDuration)
+          Expanded(
+            flex: 1000 - promilleToTakeUp(total, longestDuration),
+            child: Container(height: 10, color: Colors.transparent),
+          ),
       ],
     );
   }
 
-  int promilleToTakeUp(Duration event, Duration longest) {
-    if (longest.inMinutes == 0) {
-      return 1000;
-    }
-    if (longest.inMinutes == 0) {
-      return 100;
-    }
-    return ((event.inMinutes / longest.inMinutes) * 1000).round();
-  }
+  int promilleToTakeUp(Duration event, Duration longest) => ((event.inMinutes / longest.inMinutes) * 1000).round();
 }
