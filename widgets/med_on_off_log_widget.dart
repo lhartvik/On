@@ -13,7 +13,7 @@ class MedOnOffLogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    if (longestDuration.inMinutes < 1 || medOnOffLog.duration > longestDuration) {
+    if (longestDuration.inMinutes < 1 || medOnOffLog.duration.inMinutes > longestDuration.inMinutes) {
       return const SizedBox(height: 30);
     }
 
@@ -49,7 +49,7 @@ class MedOnOffLogWidget extends StatelessWidget {
             flex: promilleToTakeUp(duration.duration, longestDuration) + 3,
             child: Container(height: 10, color: duration.event.color),
           ),
-        if (total < longestDuration)
+        if (total.inMinutes < longestDuration.inMinutes)
           Expanded(
             flex: 1000 - promilleToTakeUp(total, longestDuration),
             child: Container(height: 10, color: Colors.transparent),
