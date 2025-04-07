@@ -37,8 +37,9 @@ class _OnScreenState extends State<OnScreen> {
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainer,
       child: OrientationBuilder(
-        builder: (context, orientation) =>
-          (orientation == Orientation.portrait) ? VerticallyAligned() : HorizontallyAligned();
+        builder:
+            (context, orientation) =>
+                (orientation == Orientation.portrait) ? VerticallyAligned() : HorizontallyAligned(),
       ),
     );
   }
