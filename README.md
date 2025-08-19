@@ -8,9 +8,13 @@ On is an app for Android and Ios mobile devices for helping people with Parkinso
 | ![Login](doc/Screenshot_20250819_083024.jpg) | ![Dashboard](doc/Screenshot_20250819_091238.jpg) | ![Settings](doc/Screenshot_20250819_083104.jpg) |
 
 ## Prerequisites
+
 [Install VS Code](https://code.visualstudio.com/download)
+
 [Install Android Studio](https://developer.android.com/studio)
+
 [Install Flutter](https://docs.flutter.dev/get-started/install) 
+
 It is possible that you need a Mac to deploy the app to an Iphone or test the app on an Ios Simulator, but it should look and work the same on Android. 
 
 ## Getting Started
