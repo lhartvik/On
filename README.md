@@ -2,6 +2,11 @@
 
 On is an app for Android and Ios mobile devices for helping people with Parkinsons track periods when the medicine takes effect(you are On) and stops working(you are Off). 
 
+## Features Preview
+| Logg | Vis | Stats |
+|--------------|--------------------|----------------|
+| ![Login](doc/Screenshot_20250819_083024.jpg) | ![Dashboard](doc/Screenshot_20250819_083033.jpg) | ![Settings](doc/Screenshot_20250819_083104.jpg) |
+
 ## Prerequisites
 [Install VS Code](https://code.visualstudio.com/download)
 [Install Android Studio](https://developer.android.com/studio)
