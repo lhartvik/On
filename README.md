@@ -5,7 +5,7 @@ On is an app for Android and Ios mobile devices for helping people with Parkinso
 ## Features Preview
 | Logg | Vis | Stats |
 |--------------|--------------------|----------------|
-| ![Login](doc/Screenshot_20250819_083024.jpg) | ![Dashboard](doc/Screenshot_20250819_083033.jpg) | ![Settings](doc/Screenshot_20250819_083104.jpg) |
+| ![Login](doc/Screenshot_20250819_083024.jpg) | ![Dashboard](doc/Screenshot_20250819_091238.jpg) | ![Settings](doc/Screenshot_20250819_083104.jpg) |
 
 ## Prerequisites
 [Install VS Code](https://code.visualstudio.com/download)
