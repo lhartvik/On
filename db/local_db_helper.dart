@@ -125,4 +125,16 @@ class LocalDBHelper implements DatabaseHelper {
       await txn.delete(_logTableName);
     });
   }
+
+  Future<String> exportLogsAsCSV() async {
+    final logs = await readAllLogs();
+    final buffer = StringBuffer();
+    buffer.writeln('event,timestamp');
+    for (final log in logs) {
+      final event = '"' + log.event.replaceAll('"', '""') + '"';
+      final timestamp = '"' + log.timestamp.replaceAll('"', '""') + '"';
+      buffer.writeln('$event,$timestamp');
+    }
+    return buffer.toString();
+  }
 }
