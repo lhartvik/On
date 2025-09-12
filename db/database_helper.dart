@@ -1,4 +1,4 @@
-import '../model/logg.dart';
+import 'package:onlight/model/logg.dart';
 
 abstract class DatabaseHelper {
   Future<void> insert(String event, {DateTime? tidspunkt});

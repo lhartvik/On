@@ -58,6 +58,10 @@ Use Android Studio for upgrading and installing Android SDKs. Mark all "-" boxes
 Permissions seems to be unneccessary when directly connected to PC. Keep track of what device features you introduce(Using the Internet, Location, Camera, etc) and add those to the Android manifest before creating an apk. You will sometimes get warnings in the app store that tells you about missing permissions, but don't lean on this.
 
 # Deploying a new version 
+
+## App icon
+Apple has a auto validation of a new version that enforces some things, and returns a "Invalid binary" error if it fails. One important thing to remember is to supply an icon. Follow the guide on [flutter_laucher_icons](https://pub.dev/packages/flutter_launcher_icons) for this. The icon file is named icon.png in the doc folder.
+
 ## IPhone
 
 ````

@@ -47,32 +47,19 @@ class _LoggeknappState extends State<Loggeknapp> {
     }
 
     return Center(
-      child: Material(
-        borderRadius: BorderRadius.circular(16),
-        color: theme.colorScheme.primary,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: handleTap,
-          onLongPress: handleLongClick,
-          splashColor: theme.colorScheme.primary.withValues(alpha: 0.95),
-          child: Container(
-            width: 200,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-            ),
-            child: Center(
-              child: Text(
-                widget.tittel,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-            ),
+      child: ElevatedButton(
+        onLongPress: handleLongClick,
+        onPressed: handleTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: theme.colorScheme.primary,
+          foregroundColor: theme.colorScheme.onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
+          minimumSize: const Size(200, 50),
         ),
+        child: Text(widget.tittel, style: theme.textTheme.titleLarge?.
+                  copyWith(color: theme.colorScheme.onPrimary)),
       ),
     );
   }
